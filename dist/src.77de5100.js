@@ -329,10 +329,12 @@ exports.default = Engine_1.default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BIRD_COUNT = 10;
+exports.BIRD_COUNT = 100;
 exports.BIRD_WIDTH = 15;
 exports.BIRD_HEIGHT = 12;
-exports.BIRD_SPEED = 100 / 1000;
+exports.BIRD_SPEED = 500 / 1000;
+exports.SIGHT_ANGLE = Math.PI * 0.5;
+exports.SIGHT_RANGE = 50;
 var LayerIndex;
 
 (function (LayerIndex) {
@@ -370,6 +372,13 @@ var Vector2D = /*#__PURE__*/function () {
     value: function add(vector) {
       this.x1 += vector.x1;
       this.x2 += vector.x2;
+      return this;
+    }
+  }, {
+    key: "sub",
+    value: function sub(vector) {
+      this.x1 -= vector.x1;
+      this.x2 -= vector.x2;
       return this;
     }
   }, {
@@ -428,7 +437,12 @@ exports.fromDegree = function (degree) {
   return degree * Math.PI / 180;
 };
 
+exports.getAngle = function (vector) {
+  return Math.atan2(vector.x2, vector.x1);
+};
+
 exports.flipVector = function (vector, plane, direction) {
+  var angle = exports.getAngle(vector);
   var normal = 0;
 
   if (plane === 'x' && direction === 'left') {
@@ -441,7 +455,9 @@ exports.flipVector = function (vector, plane, direction) {
     normal = Math.PI * 1.5;
   }
 
-  vector.x1 = normal * 2 - Math.PI - vector.x1;
+  var newAngle = normal * 2 - Math.PI - angle;
+  vector.x1 = Math.cos(newAngle);
+  vector.x2 = Math.sin(newAngle);
 };
 },{}],"Boids/Bird/index.ts":[function(require,module,exports) {
 "use strict";
@@ -469,16 +485,55 @@ var constants_1 = require("../constants");
 var helpers_1 = require("../helpers");
 
 var Bird = /*#__PURE__*/function () {
-  function Bird(initialX, initialY, maxX, maxY) {
+  function Bird(boids, initialX, initialY, maxX, maxY) {
     _classCallCheck(this, Bird);
 
+    this.boids = boids;
     this.maxX = maxX;
     this.maxY = maxY;
     this.position = new Vector2D_1.default(initialX, initialY);
-    this.velocity = new Vector2D_1.default(helpers_1.fromDegree(Math.random() * 360), constants_1.BIRD_SPEED);
+    var randomAngle = helpers_1.fromDegree(Math.random() * 360);
+    this.velocity = new Vector2D_1.default(Math.cos(randomAngle), Math.sin(randomAngle)).normalize().multiply(constants_1.BIRD_SPEED);
+    this.visibilityLeft = new Vector2D_1.default(constants_1.SIGHT_ANGLE - 0.01 * Math.PI, constants_1.SIGHT_RANGE);
+    this.visibilityRight = new Vector2D_1.default(-constants_1.SIGHT_ANGLE - 0.01 * Math.PI, constants_1.SIGHT_RANGE);
+    this.cohesionAccumulator = Vector2D_1.default.ZERO();
   }
 
   _createClass(Bird, [{
+    key: "resetAccumulators",
+    value: function resetAccumulators() {
+      this.cohesionAccumulator = Vector2D_1.default.ZERO();
+    }
+  }, {
+    key: "performManouevers",
+    value: function performManouevers(birds) {
+      this.resetAccumulators();
+
+      for (var i = 0; i < birds.length; i++) {
+        if (birds[i] !== this) {
+          this.accumulateCohesion(birds[i]);
+        }
+      }
+
+      this.velocity.add(this.performCohesion(birds.length)).normalize().multiply(constants_1.BIRD_SPEED);
+    }
+  }, {
+    key: "performSeparation",
+    value: function performSeparation(bird) {}
+  }, {
+    key: "performAlignment",
+    value: function performAlignment(bird) {}
+  }, {
+    key: "accumulateCohesion",
+    value: function accumulateCohesion(bird) {
+      this.cohesionAccumulator.add(bird.position);
+    }
+  }, {
+    key: "performCohesion",
+    value: function performCohesion(birdCount) {
+      return this.cohesionAccumulator.divide(birdCount - 1).sub(this.position).divide(1000);
+    }
+  }, {
     key: "checkBoundary",
     value: function checkBoundary() {
       if (this.position.x1 < 0 || this.position.x1 > this.maxX) {
@@ -494,9 +549,8 @@ var Bird = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update(deltaTime) {
-      var angle = this.velocity.x1;
-      var speed = this.velocity.x2 * deltaTime;
-      this.position.add(new Vector2D_1.default(Math.cos(angle), Math.sin(angle)).multiply(speed));
+      this.performManouevers(this.boids.birds);
+      this.position.add(this.velocity.clone().multiply(deltaTime));
       this.checkBoundary();
     }
   }, {
@@ -516,14 +570,14 @@ var Bird = /*#__PURE__*/function () {
     key: "rotate",
     value: function rotate(context) {
       context.translate(this.position.x1, this.position.x2);
-      context.rotate(this.velocity.x1);
+      context.rotate(helpers_1.getAngle(this.velocity));
       context.translate(-this.position.x1, -this.position.x2);
     }
   }, {
     key: "unrotate",
     value: function unrotate(context) {
       context.translate(this.position.x1, this.position.x2);
-      context.rotate(-this.velocity.x1);
+      context.rotate(-helpers_1.getAngle(this.velocity));
       context.translate(-this.position.x1, -this.position.x2);
     }
   }]);
@@ -571,7 +625,7 @@ var Boids = function Boids() {
   this.birds = [];
 
   for (var i = 0; i < constants_1.BIRD_COUNT; i++) {
-    var bird = new Bird_1.default(Math.random() * this.birdLayer.getWidth(), Math.random() * this.birdLayer.getHeight(), this.birdLayer.getWidth(), this.birdLayer.getHeight());
+    var bird = new Bird_1.default(this, Math.random() * this.birdLayer.getWidth(), Math.random() * this.birdLayer.getHeight(), this.birdLayer.getWidth(), this.birdLayer.getHeight());
     this.birds.push(bird);
     this.birdLayer.addEntity(bird);
   }
@@ -632,7 +686,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50322" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61118" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

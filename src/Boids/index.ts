@@ -20,6 +20,7 @@ export default class Boids {
         for(let i = 0; i<BIRD_COUNT; i++) {
             // add a bird at a random location in our layer.
             const bird = new Bird(
+                this,
                 Math.random() * this.birdLayer.getWidth(), 
                 Math.random() * this.birdLayer.getHeight(),
                 this.birdLayer.getWidth(),

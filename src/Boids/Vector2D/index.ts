@@ -21,6 +21,12 @@ export default class Vector2D {
         this.x2 += vector.x2;
         return this;
     }
+    
+    sub(vector: Vector2D) {
+        this.x1 -= vector.x1;
+        this.x2 -= vector.x2;
+        return this;
+    }
 
     multiply(scalar: number) {
         this.x1 *= scalar;
