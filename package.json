@@ -1,0 +1,62 @@
+{
+  "name": "boids",
+  "version": "1.0.0",
+  "description": "A TypeScript implementation of boids using TypeScriptRenderEngine",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "run": "parcel src/index.html --open",
+    "publish": "npm run build && gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZackTherrien/boids.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "keywords": [
+    "boids",
+    "typescript",
+    "javascript",
+    "birds",
+    "flock",
+    "algorithm"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Zack Therrien",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZackTherrien/boids/issues"
+  },
+  "homepage": "https://github.com/ZackTherrien/boids#readme",
+  "dependencies": {
+    "@zacktherrien/typescript-render-engine": "^1.2.0",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.2",
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^2.0.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": ""
+    }
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --fix"
+  }
+}

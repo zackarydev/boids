@@ -1,0 +1,245 @@
+{
+  "program": {
+    "fileInfos": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts": {
+        "version": "c180f01a2aaac7d733001fa1db20f881dc83cf33096b674a1546ca26762e69da",
+        "signature": "c180f01a2aaac7d733001fa1db20f881dc83cf33096b674a1546ca26762e69da"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "b42eddba1a53c9d27279cfe7fc0416c10a81489826ad47e39013b9d340fc0cc7",
+        "signature": "b42eddba1a53c9d27279cfe7fc0416c10a81489826ad47e39013b9d340fc0cc7"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96",
+        "signature": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "f2039e0dbc31f69183f6377b368c033802dfdcf77e5fd214def06c1fd7b225ed",
+        "signature": "f2039e0dbc31f69183f6377b368c033802dfdcf77e5fd214def06c1fd7b225ed"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts": {
+        "version": "8329c3401aa8708426c7760f14219170f69a2cb77e4519758cec6f5027270faf",
+        "signature": "8329c3401aa8708426c7760f14219170f69a2cb77e4519758cec6f5027270faf"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts": {
+        "version": "fe4e59403e34c7ff747abe4ff6abbc7718229556d7c1a5b93473fb53156c913b",
+        "signature": "fe4e59403e34c7ff747abe4ff6abbc7718229556d7c1a5b93473fb53156c913b"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.scripthost.d.ts": {
+        "version": "b9faa17292f17d2ad75e34fac77dd63a6403af1dba02d39cd0cbb9ffdf3de8b9",
+        "signature": "b9faa17292f17d2ad75e34fac77dd63a6403af1dba02d39cd0cbb9ffdf3de8b9"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "734ddc145e147fbcd55f07d034f50ccff1086f5a880107665ec326fb368876f6",
+        "signature": "734ddc145e147fbcd55f07d034f50ccff1086f5a880107665ec326fb368876f6"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "4a0862a21f4700de873db3b916f70e41570e2f558da77d2087c9490f5a0615d8",
+        "signature": "4a0862a21f4700de873db3b916f70e41570e2f558da77d2087c9490f5a0615d8"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122",
+        "signature": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210",
+        "signature": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "d4deaafbb18680e3143e8b471acd650ed6f72a408a33137f0a0dd104fbe7f8ca",
+        "signature": "d4deaafbb18680e3143e8b471acd650ed6f72a408a33137f0a0dd104fbe7f8ca"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe",
+        "signature": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976",
+        "signature": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230",
+        "signature": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230"
+      },
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
+        "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
+      },
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts": {
+        "version": "41bd041e558c9a2a05a51c294b3bb65925421d3f2e7eb3aab0d586c7c61ff3f2",
+        "signature": "41bd041e558c9a2a05a51c294b3bb65925421d3f2e7eb3aab0d586c7c61ff3f2"
+      },
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts": {
+        "version": "768e4399e5f5c755878a7a1d5833e153da7eecce79e9d8c71e5a2668e02bf03c",
+        "signature": "768e4399e5f5c755878a7a1d5833e153da7eecce79e9d8c71e5a2668e02bf03c"
+      },
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/engine/index.d.ts": {
+        "version": "0072543bb760d009a65242e9c42eb30e9f12ad1314fc8a6b58e5b9182d8cd542",
+        "signature": "0072543bb760d009a65242e9c42eb30e9f12ad1314fc8a6b58e5b9182d8cd542"
+      },
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts": {
+        "version": "3b527fa98930235832b103735a378cacb98db8c55b69256c53f3a11221ffd3ba",
+        "signature": "3b527fa98930235832b103735a378cacb98db8c55b69256c53f3a11221ffd3ba"
+      },
+      "./src/boids/constants.ts": {
+        "version": "970dd08399e1b238201f36c306fb9d8f6b9e1e9d69a4a95b37d455d1cf9ffd31",
+        "signature": "588130dee1194d5fac97ecb79fde5d75963d53e24a9422f89857969a5fa211c8"
+      },
+      "./src/boids/vector2d/index.ts": {
+        "version": "b941150282206a917196b617fa2881101fd42cc5f9dd77ae206434285a744a78",
+        "signature": "f9ef1ea846d5a05dec24f11cb259f5f84931a6dd420259fbd5bed8291c2a60e0"
+      },
+      "./src/boids/helpers.ts": {
+        "version": "cb52877234dcbd47b0f41dc0e491f535cf2c1282731efe804ed69d9acbe57e37",
+        "signature": "3001ceb222ccf046f22cd5baed9ee310219618bbf55ff88ed5ab8e74f63ede1b"
+      },
+      "./src/boids/bird/index.ts": {
+        "version": "dfbab642841617f15c73dbba342ac944726c1617e20e933bb9e736878191429e",
+        "signature": "d8096ecac6bc9aa85c15a3b164e30766d5e15ef36e7fa8afb3139074cfeb804d"
+      },
+      "./src/boids/index.ts": {
+        "version": "cc709cbe79f0e6f192d0bbe3ac1a621aec7439ea097ca5a891727513b5465711",
+        "signature": "615a12d21a71042ebb32261b7095f1c27c189c0102cacb4db3c8b568cfab64c9"
+      },
+      "./src/index.ts": {
+        "version": "70a5958bc6fbe5e08cf475a132cf1c69c621d790710b3d23403d86d2644b8351",
+        "signature": "f667f6b1d66ba55f0dcd27f5ff050063fecfe289bad00e8c5d48344a775c1439"
+      },
+      "./node_modules/@types/color-name/index.d.ts": {
+        "version": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
+        "signature": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e"
+      },
+      "./node_modules/@types/eslint-visitor-keys/index.d.ts": {
+        "version": "725d9be2fd48440256f4deb00649adffdbc5ecd282b09e89d4e200663792c34c",
+        "signature": "725d9be2fd48440256f4deb00649adffdbc5ecd282b09e89d4e200663792c34c"
+      },
+      "./node_modules/@types/json-schema/index.d.ts": {
+        "version": "92bc43ea5584457c9325a3d5b2ce5af77df6d2653be7e4c2e9a626f89293c3c1",
+        "signature": "92bc43ea5584457c9325a3d5b2ce5af77df6d2653be7e4c2e9a626f89293c3c1"
+      },
+      "./node_modules/@types/parse-json/index.d.ts": {
+        "version": "2b8264b2fefd7367e0f20e2c04eed5d3038831fe00f5efbc110ff0131aab899b",
+        "signature": "2b8264b2fefd7367e0f20e2c04eed5d3038831fe00f5efbc110ff0131aab899b"
+      },
+      "./node_modules/@types/q/index.d.ts": {
+        "version": "57427a9a368f8f0ee4ce03c36a762e19166756b95ab688948b29be553b24a78a",
+        "signature": "57427a9a368f8f0ee4ce03c36a762e19166756b95ab688948b29be553b24a78a"
+      }
+    },
+    "options": {
+      "incremental": true,
+      "target": 2,
+      "module": 1,
+      "declaration": true,
+      "declarationMap": true,
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "removeComments": true,
+      "strict": true,
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "strictFunctionTypes": true,
+      "strictBindCallApply": true,
+      "strictPropertyInitialization": true,
+      "noImplicitThis": true,
+      "alwaysStrict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "configFilePath": "./tsconfig.json"
+    },
+    "referencedMap": {
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts"
+      ],
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/engine/index.d.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts",
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts"
+      ],
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/engine/index.d.ts",
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts",
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts"
+      ],
+      "./src/boids/helpers.ts": [
+        "./src/boids/vector2d/index.ts"
+      ],
+      "./src/boids/bird/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/constants.ts",
+        "./src/boids/helpers.ts"
+      ],
+      "./src/boids/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/constants.ts",
+        "./src/boids/bird/index.ts"
+      ],
+      "./src/index.ts": [
+        "./src/boids/index.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/engine/index.d.ts",
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts",
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts"
+      ],
+      "./src/boids/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/bird/index.ts"
+      ],
+      "./src/boids/bird/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/vector2d/index.ts"
+      ],
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/engine/index.d.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts",
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts"
+      ],
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts"
+      ],
+      "./src/boids/helpers.ts": [
+        "./src/boids/vector2d/index.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/types.d.ts",
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/renderinglayer/index.d.ts",
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/engine/index.d.ts",
+      "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+      "./src/boids/constants.ts",
+      "./src/boids/vector2d/index.ts",
+      "./src/boids/helpers.ts",
+      "./src/boids/bird/index.ts",
+      "./src/boids/index.ts",
+      "./src/index.ts",
+      "./node_modules/@types/color-name/index.d.ts",
+      "./node_modules/@types/eslint-visitor-keys/index.d.ts",
+      "./node_modules/@types/json-schema/index.d.ts",
+      "./node_modules/@types/parse-json/index.d.ts",
+      "./node_modules/@types/q/index.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.scripthost.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts"
+    ]
+  },
+  "version": "3.8.3"
+}
