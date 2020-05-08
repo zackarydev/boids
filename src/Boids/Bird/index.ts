@@ -8,14 +8,11 @@ import {
     BIRD_WIDTH, 
     BIRD_HEIGHT, 
     BIRD_SPEED, 
-    SIGHT_ANGLE, 
-    SIGHT_RANGE, 
-    BIRD_COHESION_RESISTANCE, 
+    BIRD_COHESION_EAGERNESS, 
     BIRD_SEPARATION_DISTANCE,
-    BIRD_SEPARATION_RESISTANCE,
+    BIRD_SEPARATION_EAGERNESS,
     BIRD_ALIGNMENT_EAGERNESS,
     BIRD_VISUAL_RANGE,
-    BIRD_RETURN_VELOCITY,
 } from '../constants';
 import { fromDegree, getAngle } from '../helpers';
 
@@ -25,22 +22,21 @@ export interface IBird extends IEntity {
 }
 
 export default class Bird implements IBird {
-
+    
     boids: Boids;
+    maxX: number;
+    maxY: number;
 
     position: Vector2D;
     velocity: Vector2D;
     acceleration: Vector2D;
 
-    maxX: number;
-    maxY: number;
-
     cohesionAccumulator: Vector2D;
     separationAccumulator: Vector2D;
     alignmentAccumulator: Vector2D;
 
-    visibilityLeft: Vector2D;
-    visibilityRight: Vector2D;
+    // visibilityLeft: Vector2D;
+    // visibilityRight: Vector2D;
 
     constructor(boids: Boids, initialX: number, initialY: number, maxX: number, maxY: number) {
         this.boids = boids;
@@ -59,8 +55,8 @@ export default class Bird implements IBird {
 
         this.acceleration = Vector2D.ZERO();
 
-        this.visibilityLeft = new Vector2D(SIGHT_ANGLE - 0.01*Math.PI, SIGHT_RANGE);
-        this.visibilityRight = new Vector2D(-SIGHT_ANGLE - 0.01*Math.PI, SIGHT_RANGE);
+        // this.visibilityLeft = new Vector2D(SIGHT_ANGLE - 0.01*Math.PI, SIGHT_RANGE);
+        // this.visibilityRight = new Vector2D(-SIGHT_ANGLE - 0.01*Math.PI, SIGHT_RANGE);
 
         // Accumulators for performance
         this.cohesionAccumulator = Vector2D.ZERO();
@@ -97,8 +93,9 @@ export default class Bird implements IBird {
         if(perceivedBirdCount !== 0) {
             this.acceleration
                 .add(this.performCohesion(perceivedBirdCount))
-                .add(this.performSeparation())
+                .add(this.performSeparation(perceivedBirdCount))
                 .add(this.performAlignment(perceivedBirdCount));
+                // TODO: Limit acceleration.
         }
 
         // Goal seeking
@@ -107,7 +104,7 @@ export default class Bird implements IBird {
         //     .add(this.checkPredators());
         
         this.checkBoundary();
-        // this.checkVelocity();
+        this.checkVelocity();
     }
 
     accumulateCohesion(bird: IBird) {
@@ -115,11 +112,14 @@ export default class Bird implements IBird {
     }
 
     accumulateSeparation(bird: IBird) {
-        const diff = this.position.clone().sub(bird.position);
+        const positionDiff = this.position
+            .clone()             // must clone because Vector2D is mutable
+            .sub(bird.position); // find the difference to the other bird
 
-        if (diff.magnitude() < BIRD_SEPARATION_DISTANCE) {
-            this.separationAccumulator.add(
-                diff.divide(diff.magnitude())
+        const distance = positionDiff.magnitude(); // find the distance
+        if(distance <= BIRD_SEPARATION_DISTANCE) {
+            this.separationAccumulator.add(     // add the force to our accumulator
+                positionDiff.divide(distance)
             );
         }
     }
@@ -130,25 +130,30 @@ export default class Bird implements IBird {
 
     performCohesion(birdCount: number): Vector2D {
         return this.cohesionAccumulator
-            .divide(birdCount)
-            .sub(this.position)
-            .divide(BIRD_COHESION_RESISTANCE)
-            .sub(this.velocity);
+            .divide(birdCount)      // average position of other birds
+            .sub(this.position)     // how far away are they from this bird
+            .normalize()            // not normalizing means the average positions cancel out and the birds grind to a halt.
+            .multiply(BIRD_SPEED)   // 
+            .sub(this.velocity)     // subtract our velocity to get the force
+            .multiply(BIRD_COHESION_EAGERNESS); // change how fast birds want to coalesce
     }
 
-    performSeparation():Vector2D {
+    performSeparation(birdCount: number): Vector2D {
         return this.separationAccumulator
-            .divide(BIRD_SEPARATION_RESISTANCE)
-            .sub(this.velocity)
-            .normalize()
-            .multiply(0.1);
+            .divide(birdCount)
+            .normalize()            // not normalizing means the average velocities cancel out and the birds grind to a halt.
+            .multiply(BIRD_SPEED)   // 
+            .sub(this.velocity)     // find the difference between the separation velocity and ours.
+            .multiply(BIRD_SEPARATION_EAGERNESS); // Change how fast birds want to align. 0 = No alignment, 1 = Immediate alignment.
     }
 
     performAlignment(birdCount: number): Vector2D {
         return this.alignmentAccumulator
-            .divide(birdCount)
-            .sub(this.velocity)
-            .multiply(BIRD_ALIGNMENT_EAGERNESS);
+            .divide(birdCount)      // average velocity of other birds
+            .normalize()            // not normalizing means the average velocities cancel out and the birds grind to a halt.
+            .multiply(BIRD_SPEED)   // 
+            .sub(this.velocity)     // subtract our velocity to get the force
+            .multiply(BIRD_ALIGNMENT_EAGERNESS); // Change how fast birds want to align. 0 = No alignment, 1 = Immediate alignment.
     }
 
     checkPredators() {
@@ -156,7 +161,7 @@ export default class Bird implements IBird {
             return this.boids.mouseLocation
                 .clone()
                 .sub(this.position)
-                .divide(BIRD_COHESION_RESISTANCE)
+                .divide(BIRD_COHESION_EAGERNESS)
                 .multiply(-1);
         }
         return Vector2D.CONST_ZERO;
@@ -167,7 +172,7 @@ export default class Bird implements IBird {
             return this.boids.mouseLocation
                 .clone()
                 .sub(this.position)
-                .divide(BIRD_COHESION_RESISTANCE);
+                .divide(BIRD_COHESION_EAGERNESS);
         }
         return Vector2D.CONST_ZERO;
     }
@@ -187,19 +192,22 @@ export default class Bird implements IBird {
 
     checkVelocity() {
         // limit velocity:
-        if (this.velocity.magnitude() > BIRD_SPEED) {
+        // if (this.velocity.magnitude() > BIRD_SPEED) {
             this.velocity
                 .normalize()
                 .multiply(BIRD_SPEED);
-        }
+        // }
     }
 
     update(deltaTime: number) {
         this.performManeuvers(this.boids.birds);
 
-        this.position.add(this.velocity.clone().multiply(deltaTime));
+        this.position.add(
+            this.velocity
+                .clone() // we must clone because multiply mutates the object.
+                .multiply(deltaTime)
+        );
         this.velocity.add(this.acceleration);
-        this.checkVelocity();
     }
 
     render(context: CanvasRenderingContext2D) {

@@ -332,13 +332,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.BIRD_COUNT = 500;
 exports.BIRD_WIDTH = 4;
 exports.BIRD_HEIGHT = 2;
-exports.BIRD_SPEED = 40 / 1000;
-exports.BIRD_VISUAL_RANGE = 150;
+exports.BIRD_SPEED = 100 / 1000;
+exports.BIRD_VISUAL_RANGE = 75;
 exports.BIRD_RETURN_VELOCITY = 0;
-exports.BIRD_COHESION_RESISTANCE = 1;
-exports.BIRD_SEPARATION_DISTANCE = 1.5 * Math.sqrt(exports.BIRD_WIDTH * exports.BIRD_WIDTH + exports.BIRD_HEIGHT * exports.BIRD_HEIGHT);
-exports.BIRD_SEPARATION_RESISTANCE = 1;
-exports.BIRD_ALIGNMENT_EAGERNESS = 4;
+exports.BIRD_SEPARATION_DISTANCE = 2 * Math.sqrt(exports.BIRD_WIDTH * exports.BIRD_WIDTH + exports.BIRD_HEIGHT * exports.BIRD_HEIGHT);
+exports.BIRD_SEPARATION_EAGERNESS = 0.2;
+exports.BIRD_COHESION_EAGERNESS = 0.01;
+exports.BIRD_ALIGNMENT_EAGERNESS = 0.1;
 exports.SIGHT_ANGLE = Math.PI * 0.5;
 exports.SIGHT_RANGE = 50;
 var LayerIndex;
@@ -410,7 +410,13 @@ var Vector2D = /*#__PURE__*/function () {
   }, {
     key: "normalize",
     value: function normalize() {
-      return this.divide(this.magnitude());
+      var mag = this.magnitude();
+
+      if (mag === 0) {
+        return Vector2D.ZERO();
+      }
+
+      return this.divide(mag);
     }
   }, {
     key: "magnitude",
@@ -514,8 +520,6 @@ var Bird = /*#__PURE__*/function () {
     var randomAngle = helpers_1.fromDegree(Math.random() * 360);
     this.velocity = new Vector2D_1.default(Math.cos(randomAngle), Math.sin(randomAngle)).normalize().multiply(constants_1.BIRD_SPEED);
     this.acceleration = Vector2D_1.default.ZERO();
-    this.visibilityLeft = new Vector2D_1.default(constants_1.SIGHT_ANGLE - 0.01 * Math.PI, constants_1.SIGHT_RANGE);
-    this.visibilityRight = new Vector2D_1.default(-constants_1.SIGHT_ANGLE - 0.01 * Math.PI, constants_1.SIGHT_RANGE);
     this.cohesionAccumulator = Vector2D_1.default.ZERO();
     this.separationAccumulator = Vector2D_1.default.ZERO();
     this.alignmentAccumulator = Vector2D_1.default.ZERO();
@@ -545,10 +549,11 @@ var Bird = /*#__PURE__*/function () {
       }
 
       if (perceivedBirdCount !== 0) {
-        this.acceleration.add(this.performCohesion(perceivedBirdCount)).add(this.performSeparation()).add(this.performAlignment(perceivedBirdCount));
+        this.acceleration.add(this.performCohesion(perceivedBirdCount)).add(this.performSeparation(perceivedBirdCount)).add(this.performAlignment(perceivedBirdCount));
       }
 
       this.checkBoundary();
+      this.checkVelocity();
     }
   }, {
     key: "accumulateCohesion",
@@ -558,10 +563,11 @@ var Bird = /*#__PURE__*/function () {
   }, {
     key: "accumulateSeparation",
     value: function accumulateSeparation(bird) {
-      var diff = this.position.clone().sub(bird.position);
+      var positionDiff = this.position.clone().sub(bird.position);
+      var distance = positionDiff.magnitude();
 
-      if (diff.magnitude() < constants_1.BIRD_SEPARATION_DISTANCE) {
-        this.separationAccumulator.add(diff.divide(diff.magnitude()));
+      if (distance <= constants_1.BIRD_SEPARATION_DISTANCE) {
+        this.separationAccumulator.add(positionDiff.divide(distance));
       }
     }
   }, {
@@ -572,23 +578,23 @@ var Bird = /*#__PURE__*/function () {
   }, {
     key: "performCohesion",
     value: function performCohesion(birdCount) {
-      return this.cohesionAccumulator.divide(birdCount).sub(this.position).divide(constants_1.BIRD_COHESION_RESISTANCE).sub(this.velocity);
+      return this.cohesionAccumulator.divide(birdCount).sub(this.position).normalize().multiply(constants_1.BIRD_SPEED).sub(this.velocity).multiply(constants_1.BIRD_COHESION_EAGERNESS);
     }
   }, {
     key: "performSeparation",
-    value: function performSeparation() {
-      return this.separationAccumulator.divide(constants_1.BIRD_SEPARATION_RESISTANCE).sub(this.velocity).normalize().multiply(0.1);
+    value: function performSeparation(birdCount) {
+      return this.separationAccumulator.divide(birdCount).normalize().multiply(constants_1.BIRD_SPEED).sub(this.velocity).multiply(constants_1.BIRD_SEPARATION_EAGERNESS);
     }
   }, {
     key: "performAlignment",
     value: function performAlignment(birdCount) {
-      return this.alignmentAccumulator.divide(birdCount).sub(this.velocity).multiply(constants_1.BIRD_ALIGNMENT_EAGERNESS);
+      return this.alignmentAccumulator.divide(birdCount).normalize().multiply(constants_1.BIRD_SPEED).sub(this.velocity).multiply(constants_1.BIRD_ALIGNMENT_EAGERNESS);
     }
   }, {
     key: "checkPredators",
     value: function checkPredators() {
       if (this.boids.isRightClicked) {
-        return this.boids.mouseLocation.clone().sub(this.position).divide(constants_1.BIRD_COHESION_RESISTANCE).multiply(-1);
+        return this.boids.mouseLocation.clone().sub(this.position).divide(constants_1.BIRD_COHESION_EAGERNESS).multiply(-1);
       }
 
       return Vector2D_1.default.CONST_ZERO;
@@ -597,7 +603,7 @@ var Bird = /*#__PURE__*/function () {
     key: "checkGoals",
     value: function checkGoals() {
       if (this.boids.isLeftClicked) {
-        return this.boids.mouseLocation.clone().sub(this.position).divide(constants_1.BIRD_COHESION_RESISTANCE);
+        return this.boids.mouseLocation.clone().sub(this.position).divide(constants_1.BIRD_COHESION_EAGERNESS);
       }
 
       return Vector2D_1.default.CONST_ZERO;
@@ -620,9 +626,7 @@ var Bird = /*#__PURE__*/function () {
   }, {
     key: "checkVelocity",
     value: function checkVelocity() {
-      if (this.velocity.magnitude() > constants_1.BIRD_SPEED) {
-        this.velocity.normalize().multiply(constants_1.BIRD_SPEED);
-      }
+      this.velocity.normalize().multiply(constants_1.BIRD_SPEED);
     }
   }, {
     key: "update",
@@ -630,7 +634,6 @@ var Bird = /*#__PURE__*/function () {
       this.performManeuvers(this.boids.birds);
       this.position.add(this.velocity.clone().multiply(deltaTime));
       this.velocity.add(this.acceleration);
-      this.checkVelocity();
     }
   }, {
     key: "render",
@@ -811,7 +814,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52298" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49288" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -49,7 +49,11 @@ export default class Vector2D {
     }
 
     normalize() {
-        return this.divide(this.magnitude());
+        const mag = this.magnitude();
+        if(mag === 0) {
+            return Vector2D.ZERO();
+        }
+        return this.divide(mag);
     }
 
     magnitude() {
