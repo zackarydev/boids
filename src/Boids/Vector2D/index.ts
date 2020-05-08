@@ -16,6 +16,14 @@ export default class Vector2D {
         return new Vector2D(1, 1);
     }
 
+    static CONST_ZERO = Vector2D.ZERO();
+    static CONST_ONE = Vector2D.ONE();
+
+    null() {
+        this.x1 = 0;
+        this.x2 = 0;
+    }
+
     add(vector: Vector2D) {
         this.x1 += vector.x1;
         this.x2 += vector.x2;
@@ -46,6 +54,10 @@ export default class Vector2D {
 
     magnitude() {
         return Math.sqrt(this.x1 * this.x1 + this.x2 * this.x2);
+    }
+
+    distance(vector: Vector2D): number {
+        return Math.sqrt((this.x1 - vector.x1) ** 2 + (this.x2 - vector.x2) ** 2)
     }
 
     clone() {

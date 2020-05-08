@@ -329,10 +329,16 @@ exports.default = Engine_1.default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BIRD_COUNT = 100;
-exports.BIRD_WIDTH = 15;
-exports.BIRD_HEIGHT = 12;
-exports.BIRD_SPEED = 500 / 1000;
+exports.BIRD_COUNT = 500;
+exports.BIRD_WIDTH = 4;
+exports.BIRD_HEIGHT = 2;
+exports.BIRD_SPEED = 40 / 1000;
+exports.BIRD_VISUAL_RANGE = 150;
+exports.BIRD_RETURN_VELOCITY = 0;
+exports.BIRD_COHESION_RESISTANCE = 1;
+exports.BIRD_SEPARATION_DISTANCE = 1.5 * Math.sqrt(exports.BIRD_WIDTH * exports.BIRD_WIDTH + exports.BIRD_HEIGHT * exports.BIRD_HEIGHT);
+exports.BIRD_SEPARATION_RESISTANCE = 1;
+exports.BIRD_ALIGNMENT_EAGERNESS = 4;
 exports.SIGHT_ANGLE = Math.PI * 0.5;
 exports.SIGHT_RANGE = 50;
 var LayerIndex;
@@ -368,6 +374,12 @@ var Vector2D = /*#__PURE__*/function () {
   }
 
   _createClass(Vector2D, [{
+    key: "null",
+    value: function _null() {
+      this.x1 = 0;
+      this.x2 = 0;
+    }
+  }, {
     key: "add",
     value: function add(vector) {
       this.x1 += vector.x1;
@@ -406,6 +418,11 @@ var Vector2D = /*#__PURE__*/function () {
       return Math.sqrt(this.x1 * this.x1 + this.x2 * this.x2);
     }
   }, {
+    key: "distance",
+    value: function distance(vector) {
+      return Math.sqrt(Math.pow(this.x1 - vector.x1, 2) + Math.pow(this.x2 - vector.x2, 2));
+    }
+  }, {
     key: "clone",
     value: function clone() {
       return new Vector2D(this.x1, this.x2);
@@ -426,6 +443,8 @@ var Vector2D = /*#__PURE__*/function () {
 }();
 
 exports.default = Vector2D;
+Vector2D.CONST_ZERO = Vector2D.ZERO();
+Vector2D.CONST_ONE = Vector2D.ONE();
 },{}],"Boids/helpers.ts":[function(require,module,exports) {
 "use strict";
 
@@ -494,64 +513,124 @@ var Bird = /*#__PURE__*/function () {
     this.position = new Vector2D_1.default(initialX, initialY);
     var randomAngle = helpers_1.fromDegree(Math.random() * 360);
     this.velocity = new Vector2D_1.default(Math.cos(randomAngle), Math.sin(randomAngle)).normalize().multiply(constants_1.BIRD_SPEED);
+    this.acceleration = Vector2D_1.default.ZERO();
     this.visibilityLeft = new Vector2D_1.default(constants_1.SIGHT_ANGLE - 0.01 * Math.PI, constants_1.SIGHT_RANGE);
     this.visibilityRight = new Vector2D_1.default(-constants_1.SIGHT_ANGLE - 0.01 * Math.PI, constants_1.SIGHT_RANGE);
     this.cohesionAccumulator = Vector2D_1.default.ZERO();
+    this.separationAccumulator = Vector2D_1.default.ZERO();
+    this.alignmentAccumulator = Vector2D_1.default.ZERO();
   }
 
   _createClass(Bird, [{
     key: "resetAccumulators",
     value: function resetAccumulators() {
-      this.cohesionAccumulator = Vector2D_1.default.ZERO();
+      this.acceleration.null();
+      this.cohesionAccumulator.null();
+      this.separationAccumulator.null();
+      this.alignmentAccumulator.null();
     }
   }, {
-    key: "performManouevers",
-    value: function performManouevers(birds) {
+    key: "performManeuvers",
+    value: function performManeuvers(birds) {
       this.resetAccumulators();
+      var perceivedBirdCount = 0;
 
       for (var i = 0; i < birds.length; i++) {
-        if (birds[i] !== this) {
+        if (birds[i] !== this && birds[i].position.distance(this.position) < constants_1.BIRD_VISUAL_RANGE) {
+          perceivedBirdCount += 1;
           this.accumulateCohesion(birds[i]);
+          this.accumulateSeparation(birds[i]);
+          this.accumulateAlignment(birds[i]);
         }
       }
 
-      this.velocity.add(this.performCohesion(birds.length)).normalize().multiply(constants_1.BIRD_SPEED);
+      if (perceivedBirdCount !== 0) {
+        this.acceleration.add(this.performCohesion(perceivedBirdCount)).add(this.performSeparation()).add(this.performAlignment(perceivedBirdCount));
+      }
+
+      this.checkBoundary();
     }
-  }, {
-    key: "performSeparation",
-    value: function performSeparation(bird) {}
-  }, {
-    key: "performAlignment",
-    value: function performAlignment(bird) {}
   }, {
     key: "accumulateCohesion",
     value: function accumulateCohesion(bird) {
       this.cohesionAccumulator.add(bird.position);
     }
   }, {
+    key: "accumulateSeparation",
+    value: function accumulateSeparation(bird) {
+      var diff = this.position.clone().sub(bird.position);
+
+      if (diff.magnitude() < constants_1.BIRD_SEPARATION_DISTANCE) {
+        this.separationAccumulator.add(diff.divide(diff.magnitude()));
+      }
+    }
+  }, {
+    key: "accumulateAlignment",
+    value: function accumulateAlignment(bird) {
+      this.alignmentAccumulator.add(bird.velocity);
+    }
+  }, {
     key: "performCohesion",
     value: function performCohesion(birdCount) {
-      return this.cohesionAccumulator.divide(birdCount - 1).sub(this.position).divide(1000);
+      return this.cohesionAccumulator.divide(birdCount).sub(this.position).divide(constants_1.BIRD_COHESION_RESISTANCE).sub(this.velocity);
+    }
+  }, {
+    key: "performSeparation",
+    value: function performSeparation() {
+      return this.separationAccumulator.divide(constants_1.BIRD_SEPARATION_RESISTANCE).sub(this.velocity).normalize().multiply(0.1);
+    }
+  }, {
+    key: "performAlignment",
+    value: function performAlignment(birdCount) {
+      return this.alignmentAccumulator.divide(birdCount).sub(this.velocity).multiply(constants_1.BIRD_ALIGNMENT_EAGERNESS);
+    }
+  }, {
+    key: "checkPredators",
+    value: function checkPredators() {
+      if (this.boids.isRightClicked) {
+        return this.boids.mouseLocation.clone().sub(this.position).divide(constants_1.BIRD_COHESION_RESISTANCE).multiply(-1);
+      }
+
+      return Vector2D_1.default.CONST_ZERO;
+    }
+  }, {
+    key: "checkGoals",
+    value: function checkGoals() {
+      if (this.boids.isLeftClicked) {
+        return this.boids.mouseLocation.clone().sub(this.position).divide(constants_1.BIRD_COHESION_RESISTANCE);
+      }
+
+      return Vector2D_1.default.CONST_ZERO;
     }
   }, {
     key: "checkBoundary",
     value: function checkBoundary() {
-      if (this.position.x1 < 0 || this.position.x1 > this.maxX) {
-        helpers_1.flipVector(this.velocity, 'x', this.position.x1 < 0 ? 'left' : 'right');
-        return;
+      if (this.position.x1 < 0) {
+        this.position.x1 = this.maxX;
+      } else if (this.position.x1 > this.maxX) {
+        this.position.x1 = 0;
       }
 
-      if (this.position.x2 < 0 || this.position.x2 > this.maxY) {
-        helpers_1.flipVector(this.velocity, 'y', this.position.x2 < 0 ? 'up' : 'down');
-        return;
+      if (this.position.x2 < 0) {
+        this.position.x2 = this.maxY;
+      } else if (this.position.x2 > this.maxY) {
+        this.position.x2 = 0;
+      }
+    }
+  }, {
+    key: "checkVelocity",
+    value: function checkVelocity() {
+      if (this.velocity.magnitude() > constants_1.BIRD_SPEED) {
+        this.velocity.normalize().multiply(constants_1.BIRD_SPEED);
       }
     }
   }, {
     key: "update",
     value: function update(deltaTime) {
-      this.performManouevers(this.boids.birds);
+      this.performManeuvers(this.boids.birds);
       this.position.add(this.velocity.clone().multiply(deltaTime));
-      this.checkBoundary();
+      this.velocity.add(this.acceleration);
+      this.checkVelocity();
     }
   }, {
     key: "render",
@@ -591,6 +670,10 @@ exports.default = Bird;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
@@ -617,27 +700,69 @@ var constants_1 = require("./constants");
 
 var Bird_1 = __importDefault(require("./Bird"));
 
-var Boids = function Boids() {
-  _classCallCheck(this, Boids);
+var Vector2D_1 = __importDefault(require("./Vector2D"));
 
-  this.background = new typescript_render_engine_1.RenderingLayer(constants_1.LayerIndex.BACKGROUND, typescript_render_engine_1.LayerType.STATIC);
-  this.birdLayer = new typescript_render_engine_1.RenderingLayer(constants_1.LayerIndex.BIRDS, typescript_render_engine_1.LayerType.DYNAMIC);
-  this.birds = [];
+var Boids = /*#__PURE__*/function () {
+  function Boids() {
+    _classCallCheck(this, Boids);
 
-  for (var i = 0; i < constants_1.BIRD_COUNT; i++) {
-    var bird = new Bird_1.default(this, Math.random() * this.birdLayer.getWidth(), Math.random() * this.birdLayer.getHeight(), this.birdLayer.getWidth(), this.birdLayer.getHeight());
-    this.birds.push(bird);
-    this.birdLayer.addEntity(bird);
+    this.background = new typescript_render_engine_1.RenderingLayer(constants_1.LayerIndex.BACKGROUND, typescript_render_engine_1.LayerType.STATIC);
+    this.birdLayer = new typescript_render_engine_1.RenderingLayer(constants_1.LayerIndex.BIRDS, typescript_render_engine_1.LayerType.DYNAMIC);
+    this.birds = [];
+
+    for (var i = 0; i < constants_1.BIRD_COUNT; i++) {
+      var bird = new Bird_1.default(this, Math.random() * this.birdLayer.getWidth(), Math.random() * this.birdLayer.getHeight(), this.birdLayer.getWidth(), this.birdLayer.getHeight());
+      this.birds.push(bird);
+      this.birdLayer.addEntity(bird);
+    }
+
+    this.isLeftClicked = false;
+    this.isRightClicked = false;
+    this.mouseLocation = Vector2D_1.default.ZERO();
+    this.engine = new typescript_render_engine_1.default();
+    this.engine.registerLayer(this.background);
+    this.engine.registerLayer(this.birdLayer);
+    this.engine.start();
+    document.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+    document.addEventListener('contextmenu', function (event) {
+      return event.preventDefault();
+    });
   }
 
-  this.engine = new typescript_render_engine_1.default();
-  this.engine.registerLayer(this.background);
-  this.engine.registerLayer(this.birdLayer);
-  this.engine.start();
-};
+  _createClass(Boids, [{
+    key: "handleMouseDown",
+    value: function handleMouseDown(e) {
+      if (e.button === 0) {
+        this.isLeftClicked = true;
+      } else {
+        this.isRightClicked = true;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+
+      this.mouseLocation = new Vector2D_1.default(e.offsetX, e.offsetY);
+    }
+  }, {
+    key: "handleMouseMove",
+    value: function handleMouseMove(e) {
+      this.mouseLocation = new Vector2D_1.default(e.offsetX, e.offsetY);
+    }
+  }, {
+    key: "handleMouseUp",
+    value: function handleMouseUp() {
+      this.isLeftClicked = false;
+      this.isRightClicked = false;
+      this.mouseLocation = Vector2D_1.default.ZERO();
+    }
+  }]);
+
+  return Boids;
+}();
 
 exports.default = Boids;
-},{"@zacktherrien/typescript-render-engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js","./constants":"Boids/constants.ts","./Bird":"Boids/Bird/index.ts"}],"index.ts":[function(require,module,exports) {
+},{"@zacktherrien/typescript-render-engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js","./constants":"Boids/constants.ts","./Bird":"Boids/Bird/index.ts","./Vector2D":"Boids/Vector2D/index.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -686,7 +811,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61118" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52298" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
