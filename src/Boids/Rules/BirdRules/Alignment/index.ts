@@ -1,9 +1,9 @@
-import Vector2D from "../../Vector2D";
-import { IBird } from "../../Bird";
-import Behavior, { IBehavior } from '../../Behavior';
-import { BIRD_SPEED, BIRD_ALIGNMENT_EAGERNESS } from "../../constants";
+import Vector2D from "../../../Vector2D";
+import { IBird } from "../../../Bird";
+import Behavior, { IBirdBehavior } from '../../../Behavior/BirdBehavior';
+import { BIRD_SPEED, BIRD_ALIGNMENT_EAGERNESS } from "../../../constants";
 
-interface IAlignment extends IBehavior {
+interface IAlignment extends IBirdBehavior {
 }
 
 export default class Alignment extends Behavior implements IAlignment {

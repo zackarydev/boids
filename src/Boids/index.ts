@@ -8,6 +8,8 @@ import Terrain, { ITerrain } from './Terrain';
 
 export default class Boids {
 
+    static instance: Boids;
+
     engine: IEngine;
     terrain: ITerrain;
 
@@ -19,6 +21,7 @@ export default class Boids {
     mouseLocation: Vector2D;
 
     constructor() {
+        Boids.instance = this;
         this.terrain = new Terrain();
         this.birdLayer = new RenderingLayer(LayerIndex.BIRDS, LayerType.DYNAMIC);
 

@@ -1,9 +1,9 @@
-import Vector2D from "../../Vector2D";
-import { IBird } from "../../Bird";
-import Behavior, { IBehavior } from '../../Behavior';
-import { BIRD_SPEED, BIRD_SEPARATION_DISTANCE, BIRD_SEPARATION_EAGERNESS } from "../../constants";
+import Vector2D from "../../../Vector2D";
+import { IBird } from "../../../Bird";
+import Behavior, { IBirdBehavior } from '../../../Behavior/BirdBehavior';
+import { BIRD_SPEED, BIRD_SEPARATION_DISTANCE, BIRD_SEPARATION_EAGERNESS } from "../../../constants";
 
-interface ISeparation extends IBehavior {
+interface ISeparation extends IBirdBehavior {
 }
 
 export default class Separation extends Behavior implements ISeparation {

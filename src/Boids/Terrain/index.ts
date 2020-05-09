@@ -1,14 +1,17 @@
 import { RenderingLayer, LayerType, IRenderingLayer } from "@zacktherrien/typescript-render-engine";
-import { LayerIndex } from "../constants";
-
 import FastSimplexNoise from '../../../node_modules/fast-simplex-noise/src';
 
 import Square, { ISquare } from "./Square";
+import Vector2D from "../Vector2D";
+
+import { LayerIndex } from "../constants";
 import { SquareType, TerrainDefinitions } from "./types";
 import { SQUARE_TERRAIN_DEFINITIONS, SQUARE_SIZE } from "./constants";
 
 export interface  ITerrain { 
     layer: IRenderingLayer;
+
+    getSquareAtLocation(position: Vector2D): ISquare;
 }
 
 export default class Terrain implements ITerrain {
@@ -30,7 +33,7 @@ export default class Terrain implements ITerrain {
             frequency: 0.01, 
             max: 1, 
             min: 0, 
-            octaves: 2,
+            octaves: 4,
         });
         this.humidityMap = new FastSimplexNoise({
             frequency: 0.01,
@@ -39,7 +42,7 @@ export default class Terrain implements ITerrain {
             octaves: 8,
         });
         this.moistureMap = new FastSimplexNoise({
-            frequency: 0.025,
+            frequency: 0.01,
             max: 1,
             min: 0,
             octaves: 8,
@@ -69,6 +72,21 @@ export default class Terrain implements ITerrain {
         }
     }
 
+    getSquareAtLocation(position: Vector2D): ISquare {
+        const row = Math.floor(position.x2/SQUARE_SIZE);
+        const col = Math.floor(position.x1/SQUARE_SIZE);
+        if(col > this.squares[0].length) {
+            ;;debugger;;
+        }
+        if(row > this.squares.length) {
+            ;;debugger;;
+        }
+        if(!this.squares || !this.squares[row] || !this.squares[row][col]) {
+            ;;debugger;;
+        }
+        return this.squares[row][col];
+    }
+
     getTerrainType(x: number, y: number) {
         const height = this.heightMap.scaled2D(x, y);
         // const humidity = this.humidityMap.scaled2D(x, y);
@@ -89,7 +107,10 @@ export default class Terrain implements ITerrain {
                 // }
             }
         });
-        console.log(height, humidity, moisture);
-        return foundType || SquareType.WATER;
+        if(foundType === null) {
+            ;;debugger;;
+            throw new Error();
+        }
+        return foundType;
     }
 }

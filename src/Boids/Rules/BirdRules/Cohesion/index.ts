@@ -1,9 +1,9 @@
-import Vector2D from "../../Vector2D";
-import { IBird } from "../../Bird";
-import Behavior, { IBehavior } from '../../Behavior';
-import { BIRD_SPEED, BIRD_COHESION_EAGERNESS } from "../../constants";
+import Vector2D from "../../../Vector2D";
+import { IBird } from "../../../Bird";
+import Behavior, { IBirdBehavior } from '../../../Behavior/BirdBehavior';
+import { BIRD_SPEED, BIRD_COHESION_EAGERNESS } from "../../../constants";
 
-interface ICohesion extends IBehavior {
+interface ICohesion extends IBirdBehavior {
 }
 
 export default class Cohesion extends Behavior implements ICohesion {

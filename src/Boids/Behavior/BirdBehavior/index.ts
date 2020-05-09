@@ -1,13 +1,13 @@
-import Vector2D from "../Vector2D";
-import { IBird } from "../Bird";
+import Vector2D from "../../Vector2D";
+import { IBird } from "../../Bird";
 
-export interface IBehavior {
+export interface IBirdBehavior {
     reset(): void;
     perform(birdCount: number): Vector2D;
     accumulate(boid: IBird): void;
 }
 
-export default abstract class Behavior implements IBehavior {
+export default abstract class BirdBehavior implements IBirdBehavior {
     value: Vector2D;
     bird: IBird;
 
