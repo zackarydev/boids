@@ -1,9 +1,14 @@
+export enum LayerIndex {
+    BACKGROUND,
+    BIRDS
+};
 
 export const BIRD_COUNT = 500;
 
 export const BIRD_WIDTH = 4;
 export const BIRD_HEIGHT = 2;
 export const BIRD_SPEED = 100 / 1000; // 60 pixels per 1000ms
+
 export const BIRD_VISUAL_RANGE = 75;
 export const BIRD_RETURN_VELOCITY = 0;
 
