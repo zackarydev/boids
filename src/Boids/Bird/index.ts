@@ -7,8 +7,12 @@ import Boids from '../';
 import { 
     BIRD_WIDTH, 
     BIRD_HEIGHT, 
-    BIRD_SPEED, 
+    BIRD_SPEED,
     BIRD_VISUAL_RANGE,
+    INITIAL_BIRD_ENERGY,
+    ACCELERATION_ENERGY_COST,
+    VELOCITY_ENERGY_COST,
+    LIVING_ENERGY_COST,
 } from '../constants';
 import { fromDegree, getAngle } from '../helpers';
 import { IBehavior } from "../Behavior";
@@ -52,9 +56,9 @@ export default class Bird implements IBird {
         )
             .normalize()
             .multiply(BIRD_SPEED);
-
         this.acceleration = Vector2D.ZERO();
 
+        this.energy = INITIAL_BIRD_ENERGY;
 
         this.rules = [
             new Cohesion(this),
@@ -127,6 +131,11 @@ export default class Bird implements IBird {
         }
     }
 
+    die() {
+        this.boids.birds.splice(this.boids.birds.indexOf(this), 1);
+        this.boids.birdLayer.removeEntity(this);
+    }
+
     update(deltaTime: number) {
         this.performManeuvers(this.boids.birds);
 
@@ -136,6 +145,14 @@ export default class Bird implements IBird {
                 .multiply(deltaTime)
         );
         this.velocity.add(this.acceleration);
+        this.energy -= (
+            ACCELERATION_ENERGY_COST * this.acceleration.magnitude() * deltaTime * deltaTime +
+            LIVING_ENERGY_COST * deltaTime
+        );
+
+        if(this.energy < 0) {
+            this.die();
+        }
     }
 
     render(context: CanvasRenderingContext2D) {
