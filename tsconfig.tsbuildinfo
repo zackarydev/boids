@@ -1,67 +1,67 @@
 {
   "program": {
     "fileInfos": {
-      "./node_modules/typescript/lib/lib.es6.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts": {
         "version": "c180f01a2aaac7d733001fa1db20f881dc83cf33096b674a1546ca26762e69da",
         "signature": "c180f01a2aaac7d733001fa1db20f881dc83cf33096b674a1546ca26762e69da"
       },
-      "./node_modules/typescript/lib/lib.es5.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts": {
         "version": "b42eddba1a53c9d27279cfe7fc0416c10a81489826ad47e39013b9d340fc0cc7",
         "signature": "b42eddba1a53c9d27279cfe7fc0416c10a81489826ad47e39013b9d340fc0cc7"
       },
-      "./node_modules/typescript/lib/lib.es2015.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts": {
         "version": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96",
         "signature": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96"
       },
-      "./node_modules/typescript/lib/lib.dom.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": {
         "version": "f2039e0dbc31f69183f6377b368c033802dfdcf77e5fd214def06c1fd7b225ed",
         "signature": "f2039e0dbc31f69183f6377b368c033802dfdcf77e5fd214def06c1fd7b225ed"
       },
-      "./node_modules/typescript/lib/lib.dom.iterable.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts": {
         "version": "8329c3401aa8708426c7760f14219170f69a2cb77e4519758cec6f5027270faf",
         "signature": "8329c3401aa8708426c7760f14219170f69a2cb77e4519758cec6f5027270faf"
       },
-      "./node_modules/typescript/lib/lib.webworker.importscripts.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts": {
         "version": "fe4e59403e34c7ff747abe4ff6abbc7718229556d7c1a5b93473fb53156c913b",
         "signature": "fe4e59403e34c7ff747abe4ff6abbc7718229556d7c1a5b93473fb53156c913b"
       },
-      "./node_modules/typescript/lib/lib.scripthost.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.scripthost.d.ts": {
         "version": "b9faa17292f17d2ad75e34fac77dd63a6403af1dba02d39cd0cbb9ffdf3de8b9",
         "signature": "b9faa17292f17d2ad75e34fac77dd63a6403af1dba02d39cd0cbb9ffdf3de8b9"
       },
-      "./node_modules/typescript/lib/lib.es2015.core.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts": {
         "version": "734ddc145e147fbcd55f07d034f50ccff1086f5a880107665ec326fb368876f6",
         "signature": "734ddc145e147fbcd55f07d034f50ccff1086f5a880107665ec326fb368876f6"
       },
-      "./node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
         "version": "4a0862a21f4700de873db3b916f70e41570e2f558da77d2087c9490f5a0615d8",
         "signature": "4a0862a21f4700de873db3b916f70e41570e2f558da77d2087c9490f5a0615d8"
       },
-      "./node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
         "version": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122",
         "signature": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122"
       },
-      "./node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
         "version": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210",
         "signature": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210"
       },
-      "./node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
         "version": "d4deaafbb18680e3143e8b471acd650ed6f72a408a33137f0a0dd104fbe7f8ca",
         "signature": "d4deaafbb18680e3143e8b471acd650ed6f72a408a33137f0a0dd104fbe7f8ca"
       },
-      "./node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
         "version": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe",
         "signature": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe"
       },
-      "./node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
         "version": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976",
         "signature": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976"
       },
-      "./node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
         "version": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230",
         "signature": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230"
       },
-      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
         "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
         "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
       },
@@ -82,8 +82,8 @@
         "signature": "3b527fa98930235832b103735a378cacb98db8c55b69256c53f3a11221ffd3ba"
       },
       "./src/boids/constants.ts": {
-        "version": "443398ab0e34edae5066d04a24c1f50bcd8fdb4a062bc31c3abb90bd8f732397",
-        "signature": "dc9c98cb7097b34fafcdee9a275a87a77f2d8a7ef405c66020779e7eb70e2271"
+        "version": "40a0595f5f2916ce0beff1cec48d3e2ff55549ab7063d1feec08493d545e0c6e",
+        "signature": "09d6753ea1389d32dfa4647085089edb21a21d112f92ba8e652d60ad7033f348"
       },
       "./src/boids/vector2d/index.ts": {
         "version": "16ac2fef9439edd1d91b92db30c677905a89071c01cc436bb37053b25f558f1d",
@@ -93,21 +93,56 @@
         "version": "18b5762c2447649c3d3241c66013673e4e0291123b35bd6d2cc368b8f0af974e",
         "signature": "f2018cc768555a71b1947da3389a1bcb84ab11a043ece7e07bd65bc96abc0949"
       },
+      "./src/boids/behavior/index.ts": {
+        "version": "26c2afd53ffca58f4c581ea68d4380fdcd222693f55ef1289f9238267a2e27e1",
+        "signature": "31b3c5c8a5432242ebc1720a6e7d270167517d3f4a65da23fb524aba79b9036a"
+      },
+      "./src/boids/rules/cohesion/index.ts": {
+        "version": "d424a958157a04912eda5345595081a556f5d363808c1a4524b21684fbf7127e",
+        "signature": "f42e6ee27dd095fb6e9701a087d10f68aed3ba876a0d32301e391e8655717992"
+      },
+      "./src/boids/rules/alignment/index.ts": {
+        "version": "6e088c4cd31dc1147c58e6c1c976e909c5b1e76c31565d1150aa202f866a3229",
+        "signature": "ded1a665d398e8ea4d1dc26e2c41beec2683a06750479fa56ee5c5936f18392a"
+      },
+      "./src/boids/rules/separation/index.ts": {
+        "version": "d220b04f97092bde7bdeeade80f90fe5f7e951646a077aa1941ca9e0a38f11c7",
+        "signature": "5b16fb2986da0e95eaab14445d2a67fdc336b6a65e8cecc03b62cd874da0de9d"
+      },
       "./src/boids/bird/index.ts": {
-        "version": "6fb99e5e6b053444c3acee91d2896d57954f60a8ae6094d9f3a4084832f41e23",
-        "signature": "8d7b4032483b42a0150d1e534c23ca9214c9be90059033636fa8755a21511c43"
+        "version": "a597d41a6b6e02970e60e52df16ddda3b70f132517d27e30f0167d78eab66b69",
+        "signature": "ee9a7f97baccc8aef363236fe56ee9ec8e961370676434b740d34d3ab35ea7bf"
+      },
+      "./node_modules/fast-simplex-noise/src/index.ts": {
+        "version": "cfbecffa28fbfb1af8537f36c2f390f38f40fd0226fe4bbfddb48fde2e339d84"
+      },
+      "./src/boids/terrain/types.ts": {
+        "version": "9f70f045747e3172868f698e25fcd517feddbc29eadcb02413218455e066f991",
+        "signature": "d0ad9a7f0cf325840917fdb2b0c5db3f5aa26109b4cc98c2f3366d8eeb01f92f"
+      },
+      "./src/boids/colors.ts": {
+        "version": "97618e7b9533e50b6760490c3d4882d19b182aedc49f0507da4de0561c7b5833",
+        "signature": "a04a5f99101819a9c70fa579e73f6ec9fda43c6bb23e042fdcb4d56f285ffa53"
+      },
+      "./src/boids/terrain/square/index.ts": {
+        "version": "e56dfedf108c88df3abb4481f00ec715c1a30d581432097ab93c2d6e517c6a4e",
+        "signature": "e05a7716354662b356777a8b2be7bd46fac39112fb786997203d71d28f73f3c8"
+      },
+      "./src/boids/terrain/constants.ts": {
+        "version": "e50ccd0a275f21208bbc4da7222bf35b375e673a1996715707219cc54937abfa",
+        "signature": "22b63c6ace3cef650852082f9f94b470f89cdca2e7fc8b3724ae5ce8ef78b5b2"
+      },
+      "./src/boids/terrain/index.ts": {
+        "version": "777da76aac13f7721bda3dd143f1b828ea755a7fe412e3460ededf86bc158fb3",
+        "signature": "c710f8a43b6908ec911d52a62e9e67658ee0282f14242f68d0d1a88ad688992e"
       },
       "./src/boids/index.ts": {
-        "version": "49afe0051768d81d7333e26f1547a08aadd520c146391d6367cdbe0c9a92aca9",
-        "signature": "b3124aa798f099108b22856d6410c676e016dd606533052e4cfdb77a31ec5d5b"
+        "version": "e8561dc777fb37d5f77221fc27800a10284c2ead31b46e11600fed3356a00e23",
+        "signature": "cec31083c9a10585b76120279344954cb28f65b5e2d0702b3e99f6ce31f92dbd"
       },
       "./src/index.ts": {
         "version": "70a5958bc6fbe5e08cf475a132cf1c69c621d790710b3d23403d86d2644b8351",
         "signature": "f667f6b1d66ba55f0dcd27f5ff050063fecfe289bad00e8c5d48344a775c1439"
-      },
-      "./src/boids/accumulators/accumulator.ts": {
-        "version": "ba420757bc523ce251dcc2c99118fada8acd8e3d8d132f91790420e66279492a",
-        "signature": "7274769343b985b0a2ca749f3bd015b76176b253193efae9d1b203184a9763db"
       },
       "./node_modules/@types/color-name/index.d.ts": {
         "version": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
@@ -171,25 +206,68 @@
       "./src/boids/helpers.ts": [
         "./src/boids/vector2d/index.ts"
       ],
+      "./src/boids/behavior/index.ts": [
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/bird/index.ts"
+      ],
+      "./src/boids/rules/cohesion/index.ts": [
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/bird/index.ts",
+        "./src/boids/behavior/index.ts",
+        "./src/boids/constants.ts"
+      ],
+      "./src/boids/rules/alignment/index.ts": [
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/bird/index.ts",
+        "./src/boids/behavior/index.ts",
+        "./src/boids/constants.ts"
+      ],
+      "./src/boids/rules/separation/index.ts": [
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/bird/index.ts",
+        "./src/boids/behavior/index.ts",
+        "./src/boids/constants.ts"
+      ],
       "./src/boids/bird/index.ts": [
         "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
         "./src/boids/vector2d/index.ts",
         "./src/boids/index.ts",
         "./src/boids/constants.ts",
-        "./src/boids/helpers.ts"
+        "./src/boids/helpers.ts",
+        "./src/boids/behavior/index.ts",
+        "./src/boids/rules/cohesion/index.ts",
+        "./src/boids/rules/alignment/index.ts",
+        "./src/boids/rules/separation/index.ts"
+      ],
+      "./src/boids/colors.ts": [
+        "./src/boids/terrain/types.ts"
+      ],
+      "./src/boids/terrain/square/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/constants.ts",
+        "./src/boids/colors.ts",
+        "./src/boids/terrain/types.ts"
+      ],
+      "./src/boids/terrain/constants.ts": [
+        "./src/boids/terrain/types.ts"
+      ],
+      "./src/boids/terrain/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/constants.ts",
+        "./node_modules/fast-simplex-noise/src/index.ts",
+        "./src/boids/terrain/square/index.ts",
+        "./src/boids/terrain/types.ts",
+        "./src/boids/terrain/constants.ts"
       ],
       "./src/boids/index.ts": [
         "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
         "./src/boids/constants.ts",
         "./src/boids/bird/index.ts",
-        "./src/boids/vector2d/index.ts"
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/terrain/index.ts"
       ],
       "./src/index.ts": [
         "./src/boids/index.ts"
-      ],
-      "./src/boids/accumulators/accumulator.ts": [
-        "./src/boids/vector2d/index.ts",
-        "./src/boids/bird/index.ts"
       ]
     },
     "exportedModulesMap": {
@@ -211,16 +289,49 @@
       "./src/boids/bird/index.ts": [
         "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
         "./src/boids/vector2d/index.ts",
-        "./src/boids/index.ts"
+        "./src/boids/index.ts",
+        "./src/boids/behavior/index.ts"
       ],
       "./src/boids/index.ts": [
         "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/terrain/index.ts",
         "./src/boids/bird/index.ts",
         "./src/boids/vector2d/index.ts"
       ],
-      "./src/boids/accumulators/accumulator.ts": [
+      "./src/boids/rules/separation/index.ts": [
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/bird/index.ts",
+        "./src/boids/behavior/index.ts"
+      ],
+      "./src/boids/rules/alignment/index.ts": [
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/bird/index.ts",
+        "./src/boids/behavior/index.ts"
+      ],
+      "./src/boids/rules/cohesion/index.ts": [
+        "./src/boids/vector2d/index.ts",
+        "./src/boids/bird/index.ts",
+        "./src/boids/behavior/index.ts"
+      ],
+      "./src/boids/behavior/index.ts": [
         "./src/boids/vector2d/index.ts",
         "./src/boids/bird/index.ts"
+      ],
+      "./src/boids/terrain/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/terrain/square/index.ts",
+        "./node_modules/fast-simplex-noise/src/index.ts",
+        "./src/boids/terrain/types.ts"
+      ],
+      "./src/boids/terrain/square/index.ts": [
+        "./node_modules/@zacktherrien/typescript-render-engine/dist/index.d.ts",
+        "./src/boids/terrain/types.ts"
+      ],
+      "./src/boids/terrain/constants.ts": [
+        "./src/boids/terrain/types.ts"
+      ],
+      "./src/boids/colors.ts": [
+        "./src/boids/terrain/types.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -231,31 +342,119 @@
       "./src/boids/constants.ts",
       "./src/boids/vector2d/index.ts",
       "./src/boids/helpers.ts",
-      "./src/boids/bird/index.ts",
+      "./src/boids/behavior/index.ts",
+      "./src/boids/rules/cohesion/index.ts",
+      "./src/boids/rules/alignment/index.ts",
+      "./src/boids/rules/separation/index.ts",
+      [
+        "./src/boids/bird/index.ts",
+        [
+          {
+            "file": "./src/boids/bird/index.ts",
+            "start": 273,
+            "length": 20,
+            "messageText": "Module '\"../../../../../../../Users/zack/Documents/boids/src/Boids/constants\"' has no exported member 'VELOCITY_ENERGY_COST'.",
+            "category": 1,
+            "code": 2305
+          },
+          {
+            "file": "./src/boids/bird/index.ts",
+            "start": 273,
+            "length": 20,
+            "messageText": "'VELOCITY_ENERGY_COST' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
+      [
+        "./node_modules/fast-simplex-noise/src/index.ts",
+        [
+          {
+            "file": "./node_modules/fast-simplex-noise/src/index.ts",
+            "start": 4361,
+            "length": 11,
+            "code": 2322,
+            "category": 1,
+            "messageText": "Type 'null' is not assignable to type 'number'."
+          },
+          {
+            "file": "./node_modules/fast-simplex-noise/src/index.ts",
+            "start": 5415,
+            "length": 11,
+            "code": 2322,
+            "category": 1,
+            "messageText": "Type 'null' is not assignable to type 'number'."
+          },
+          {
+            "file": "./node_modules/fast-simplex-noise/src/index.ts",
+            "start": 15571,
+            "length": 11,
+            "code": 2322,
+            "category": 1,
+            "messageText": "Type 'null' is not assignable to type 'number'."
+          },
+          {
+            "file": "./node_modules/fast-simplex-noise/src/index.ts",
+            "start": 17189,
+            "length": 11,
+            "code": 2322,
+            "category": 1,
+            "messageText": "Type 'null' is not assignable to type 'number'."
+          }
+        ]
+      ],
+      "./src/boids/terrain/types.ts",
+      "./src/boids/colors.ts",
+      "./src/boids/terrain/square/index.ts",
+      "./src/boids/terrain/constants.ts",
+      [
+        "./src/boids/terrain/index.ts",
+        [
+          {
+            "file": "./src/boids/terrain/index.ts",
+            "start": 1642,
+            "length": 1,
+            "messageText": "'x' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          },
+          {
+            "file": "./src/boids/terrain/index.ts",
+            "start": 1653,
+            "length": 1,
+            "messageText": "'y' is declared but its value is never read.",
+            "category": 1,
+            "code": 6133,
+            "reportsUnnecessary": true
+          }
+        ]
+      ],
       "./src/boids/index.ts",
       "./src/index.ts",
-      "./src/boids/accumulators/accumulator.ts",
       "./node_modules/@types/color-name/index.d.ts",
       "./node_modules/@types/eslint-visitor-keys/index.d.ts",
       "./node_modules/@types/json-schema/index.d.ts",
       "./node_modules/@types/parse-json/index.d.ts",
       "./node_modules/@types/q/index.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.d.ts",
-      "./node_modules/typescript/lib/lib.es6.d.ts",
-      "./node_modules/typescript/lib/lib.es5.d.ts",
-      "./node_modules/typescript/lib/lib.dom.d.ts",
-      "./node_modules/typescript/lib/lib.dom.iterable.d.ts",
-      "./node_modules/typescript/lib/lib.webworker.importscripts.d.ts",
-      "./node_modules/typescript/lib/lib.scripthost.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.core.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.collection.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.generator.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.iterable.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.promise.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.proxy.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.reflect.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.symbol.d.ts",
-      "./node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts"
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.scripthost.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts"
     ]
   },
   "version": "3.8.3"

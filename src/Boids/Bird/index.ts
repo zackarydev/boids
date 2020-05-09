@@ -11,7 +11,6 @@ import {
     BIRD_VISUAL_RANGE,
     INITIAL_BIRD_ENERGY,
     ACCELERATION_ENERGY_COST,
-    VELOCITY_ENERGY_COST,
     LIVING_ENERGY_COST,
 } from '../constants';
 import { fromDegree, getAngle } from '../helpers';
@@ -19,6 +18,7 @@ import { IBehavior } from "../Behavior";
 import Cohesion from "../Rules/Cohesion";
 import Alignment from "../Rules/Alignment";
 import Separation from "../Rules/Separation";
+import { BirdColor } from "../colors";
 
 export interface IBird extends IEntity {
     position: Vector2D;
@@ -157,7 +157,7 @@ export default class Bird implements IBird {
 
     render(context: CanvasRenderingContext2D) {
         this.rotate(context);
-        context.strokeStyle = 'red';
+        context.strokeStyle = BirdColor;
         context.beginPath();
         context.moveTo(this.position.x1 + BIRD_WIDTH/2, this.position.x2);
         context.lineTo(this.position.x1 - BIRD_WIDTH/2, this.position.x2 + BIRD_HEIGHT/2);

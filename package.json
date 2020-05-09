@@ -38,6 +38,7 @@
   "homepage": "https://github.com/ZackTherrien/boids#readme",
   "dependencies": {
     "@zacktherrien/typescript-render-engine": "^1.2.0",
+    "fast-simplex-noise": "^3.2.1",
     "gh-pages": "^2.2.0",
     "typescript": "^3.8.3"
   },

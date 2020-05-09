@@ -4,11 +4,12 @@ import { LayerIndex, BIRD_COUNT } from './constants';
 
 import Bird, { IBird, } from './Bird';
 import Vector2D from './Vector2D';
+import Terrain, { ITerrain } from './Terrain';
 
 export default class Boids {
 
     engine: IEngine;
-    background: IRenderingLayer;
+    terrain: ITerrain;
 
     birdLayer: IRenderingLayer;
     birds: Array<IBird>;
@@ -18,7 +19,7 @@ export default class Boids {
     mouseLocation: Vector2D;
 
     constructor() {
-        this.background = new RenderingLayer(LayerIndex.BACKGROUND, LayerType.STATIC);
+        this.terrain = new Terrain();
         this.birdLayer = new RenderingLayer(LayerIndex.BIRDS, LayerType.DYNAMIC);
 
         this.birds = [];
@@ -42,9 +43,10 @@ export default class Boids {
 
         this.engine = new Engine();
 
-        this.engine.registerLayer(this.background);
+        this.engine.registerLayer(this.terrain.layer);
         this.engine.registerLayer(this.birdLayer);
         this.engine.start();
+        this.terrain.layer.render();
 
         document.addEventListener('mousedown', this.handleMouseDown.bind(this));
         document.addEventListener('mouseup', this.handleMouseUp.bind(this));
