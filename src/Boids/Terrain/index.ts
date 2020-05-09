@@ -4,8 +4,8 @@ import { LayerIndex } from "../constants";
 import FastSimplexNoise from '../../../node_modules/fast-simplex-noise/src';
 
 import Square, { ISquare } from "./Square";
-import { BiomeType, TerrainHeightDefinition, SquareType } from "./types";
-import { SQUARE_TERRAIN_HEIGHTS, SQUARE_SIZE } from "./constants";
+import { SquareType, TerrainDefinitions } from "./types";
+import { SQUARE_TERRAIN_DEFINITIONS, SQUARE_SIZE } from "./constants";
 
 export interface  ITerrain { 
     layer: IRenderingLayer;
@@ -17,16 +17,32 @@ export default class Terrain implements ITerrain {
 
     squares: Array<Array<ISquare>>;
 
-    noise: FastSimplexNoise;
+    heightMap: FastSimplexNoise;
+
+    humidityMap: FastSimplexNoise;
+
+    moistureMap: FastSimplexNoise;
 
     constructor() {
         this.layer = new RenderingLayer(LayerIndex.BACKGROUND, LayerType.STATIC);
 
-        this.noise = new FastSimplexNoise({ 
+        this.heightMap = new FastSimplexNoise({ 
             frequency: 0.01, 
             max: 1, 
             min: 0, 
-            octaves: 8 
+            octaves: 2,
+        });
+        this.humidityMap = new FastSimplexNoise({
+            frequency: 0.01,
+            max: 1,
+            min: 0,
+            octaves: 8,
+        });
+        this.moistureMap = new FastSimplexNoise({
+            frequency: 0.025,
+            max: 1,
+            min: 0,
+            octaves: 8,
         });
 
         this.squares = [];
@@ -53,36 +69,27 @@ export default class Terrain implements ITerrain {
         }
     }
 
-    getBiomeType(x: number, y: number) {
-        // const humidity = this.noise.scaled2D(x, y);
-        return BiomeType.OCEAN;
-    }
-
     getTerrainType(x: number, y: number) {
-        const biomeType = this.getBiomeType(x, y);
-
-        const height = this.noise.scaled2D(x, y);
-        const squareType = this.squareTypeFromHeight(biomeType, height);
+        const height = this.heightMap.scaled2D(x, y);
+        // const humidity = this.humidityMap.scaled2D(x, y);
+        const moisture = this.moistureMap.scaled2D(x, y);
+        const squareType = this.squareTypeFromHeight(height, 0, moisture);
 
         return squareType;
     }
 
-    squareTypeFromHeight(biome: BiomeType, height: number): SquareType {
-        const biomeHeights = SQUARE_TERRAIN_HEIGHTS.get(biome);
-        if(!biomeHeights) {
-            throw new Error(`Biome ${biome} is not a biome in terrain heights.`);
-        }
-
+    squareTypeFromHeight(height: number, humidity: number, moisture: number): SquareType {
         let foundType = null;
-        // TODO: Refactor this.
-        biomeHeights.forEach((heights: TerrainHeightDefinition, type: SquareType) => {
-            if(height >= heights.min && height <= heights.max) {
-                foundType = type;
+        SQUARE_TERRAIN_DEFINITIONS.forEach((values: TerrainDefinitions, type: SquareType) => {
+            if(height >= values.height.min && height <= values.height.max) {
+                // if(humidity >= values.humidity.min && humidity <= values.humidity.max) {
+                    if(moisture >= values.moisture.min && moisture <= values.moisture.max) {
+                        foundType = type;
+                    }
+                // }
             }
         });
-        if(foundType === null) {
-            throw new Error(`Height is out of bounds. Received ${height}`);
-        }
-        return foundType;
+        console.log(height, humidity, moisture);
+        return foundType || SquareType.WATER;
     }
 }

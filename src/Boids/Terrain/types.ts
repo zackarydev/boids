@@ -1,15 +1,34 @@
-export enum BiomeType {
-    OCEAN,
-    FLATLANDS,
-};
-
 export enum SquareType {
+    DEEP_WATER,
     WATER,
-    SAND,
-    GRASS,
+    SHORE_WATER,
+    LAKE_WATER,
+
+    SNOW,
+    TUNDRA,
+    BARE,
+    SCORCHED,
+
+    TAIGA,
+    SHRUBLAND,
+    TEMPERATE_DESERT,
+
+    TEMPERATE_RAIN_FOREST,
+    TEMPERATE_DECIDUOUS_FOREST,
+    GRASSLAND,
+    
+    TROPICAL_RAIN_FOREST,
+    TROPICAL_SEASONAL_FOREST,
+    SUBTROPICAL_DESERT,
 };
 
-export type TerrainHeightDefinition = {
+export type TerrainDefinition = {
     min: number,
     max: number,
+};
+
+export type TerrainDefinitions = {
+    height: TerrainDefinition,
+    humidity: TerrainDefinition,
+    moisture: TerrainDefinition,
 };
