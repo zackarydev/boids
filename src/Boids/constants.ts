@@ -1,6 +1,7 @@
 export enum LayerIndex {
     BACKGROUND,
-    BIRDS
+    BIRDS,
+    TOOLS,
 };
 
 export const BIRD_COUNT = 500;

@@ -3,8 +3,8 @@ import Engine, { IEngine, RenderingLayer, LayerType, IRenderingLayer } from '@za
 import { LayerIndex, BIRD_COUNT } from './constants';
 
 import Bird, { IBird, } from './Bird';
-import Vector2D from './Vector2D';
 import Terrain, { ITerrain } from './Terrain';
+import MouseTools, { IMouseTools } from './MouseTools';
 
 export default class Boids {
 
@@ -12,16 +12,14 @@ export default class Boids {
 
     engine: IEngine;
     terrain: ITerrain;
+    mouseTools: IMouseTools;
 
     birdLayer: IRenderingLayer;
     birds: Array<IBird>;
 
-    isLeftClicked: boolean;
-    isRightClicked: boolean;
-    mouseLocation: Vector2D;
-
     constructor() {
         Boids.instance = this;
+        this.mouseTools = new MouseTools();
         this.terrain = new Terrain();
         this.birdLayer = new RenderingLayer(LayerIndex.BIRDS, LayerType.DYNAMIC);
 
@@ -40,41 +38,11 @@ export default class Boids {
             this.birdLayer.addEntity(bird);
         }
 
-        this.isLeftClicked = false;
-        this.isRightClicked = false;
-        this.mouseLocation = Vector2D.ZERO();
-
         this.engine = new Engine();
 
         this.engine.registerLayer(this.terrain.layer);
         this.engine.registerLayer(this.birdLayer);
         this.engine.start();
         this.terrain.layer.render();
-
-        document.addEventListener('mousedown', this.handleMouseDown.bind(this));
-        document.addEventListener('mouseup', this.handleMouseUp.bind(this));
-        document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-        document.addEventListener('contextmenu', event => event.preventDefault());
-    }
-
-    handleMouseDown(e: MouseEvent) {
-        if(e.button === 0) {
-            this.isLeftClicked = true;
-        } else {
-            this.isRightClicked = true;
-            e.preventDefault();
-            e.stopImmediatePropagation();
-        }
-        this.mouseLocation = new Vector2D(e.offsetX, e.offsetY);
-    }
-
-    handleMouseMove(e: MouseEvent) {
-        this.mouseLocation = new Vector2D(e.offsetX, e.offsetY);
-    }
-
-    handleMouseUp() {
-        this.isLeftClicked = false;
-        this.isRightClicked = false;
-        this.mouseLocation = Vector2D.ZERO();
     }
 }
