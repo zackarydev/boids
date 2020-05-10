@@ -5,7 +5,6 @@ import { IBird } from "../../../Bird";
 import Behavior, { IBirdBehavior } from '../../../Behavior/BirdBehavior';
 
 import { 
-    BIRD_START_HUNGER_ENERGY, 
     BIRD_VISUAL_RANGE, 
     BIRD_SPEED, 
     MAX_BIRD_ENERGY,
@@ -114,37 +113,15 @@ export default class Hunger extends Behavior implements IHunger {
             } else {
                 return foodSquareVector
                     .normalize()                // not normalizing means the average velocities cancel out and the birds grind to a halt.
-                    .multiply(BIRD_SPEED)       // 
+                    .multiply(this.bird.velocity.magnitude())
                     .sub(this.bird.velocity)    // subtract our velocity to get the force
-                    // .multiply(BIRD_ALIGNMENT_EAGERNESS); // Change how fast birds want to align. 0 = No alignment, 1 = Immediate alignment.
+                    .multiply(desireToLand); // Change how fast birds want to align. 0 = No alignment, 1 = Immediate alignment.
             }
         } else {
             // no desire to land. Find the next nearest desire.
 
             return null;
         }
-
-        // if(this.bird.energy < BIRD_START_HUNGER_ENERGY) {
-        //     if(square && square.foodLevel > 0) {
-        //         this.bird.landed = true;
-        //         return null;
-        //     } else {
-        //         const foodVector = this.performFoodSearch();
-        //         if(!foodVector) return null;
-        //         return foodVector
-        //             .normalize()
-        //             .multiply(BIRD_SPEED);
-        //     }
-        // } else {
-        //     if(this.value.magnitude() > 0) {
-        //         return this.value
-        //             .divide(birdCount)          // average position of other birds
-        //             .sub(this.bird.position)    // how far away are they from this bird
-        //             .normalize()
-        //             .multiply(BIRD_SPEED);      // move towards the other birds that are feeding
-        //     }
-        // }
-        // return null;
     }
 
     accumulate(bird: IBird) {

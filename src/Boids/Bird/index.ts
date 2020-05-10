@@ -67,7 +67,7 @@ export default class Bird implements IBird {
             .multiply(BIRD_SPEED);
         this.acceleration = Vector2D.ZERO();
 
-        this.energy = MAX_BIRD_ENERGY;
+        this.energy = MAX_BIRD_ENERGY * 0.5 + MAX_BIRD_ENERGY * Math.random();
 
         this.birdRules = [
             new Cohesion(this),
