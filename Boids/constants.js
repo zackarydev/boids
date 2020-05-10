@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var LayerIndex;
+(function (LayerIndex) {
+    LayerIndex[LayerIndex["BACKGROUND"] = 0] = "BACKGROUND";
+    LayerIndex[LayerIndex["BIRDS"] = 1] = "BIRDS";
+})(LayerIndex = exports.LayerIndex || (exports.LayerIndex = {}));
+;
+exports.BIRD_COUNT = 500;
+exports.BIRD_WIDTH = 4;
+exports.BIRD_HEIGHT = 2;
+exports.BIRD_SPEED = 100 / 1000;
+exports.BIRD_VISUAL_RANGE = 75;
+exports.MAX_BIRD_ENERGY = 1000;
+exports.ACCELERATION_ENERGY_COST = 1 / 100;
+exports.LIVING_ENERGY_COST = 1 / 1000;
+exports.BIRD_SEPARATION_DISTANCE = 2 * Math.sqrt(exports.BIRD_WIDTH * exports.BIRD_WIDTH + exports.BIRD_HEIGHT * exports.BIRD_HEIGHT);
+exports.BIRD_SEPARATION_EAGERNESS = 0.2;
+exports.BIRD_COHESION_EAGERNESS = 0.01;
+exports.BIRD_ALIGNMENT_EAGERNESS = 0.1;
+exports.BIRD_START_HUNGER_ENERGY = exports.MAX_BIRD_ENERGY / 2;
+exports.BIRD_EATING_SPEED = 50 / 1000;

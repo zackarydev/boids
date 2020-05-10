@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../src/Boids/Rules/SelfRules/Hunger/index.ts"],"names":[],"mappings":"AAAA,OAAO,YAAY,EAAE,EAAE,aAAa,EAAE,MAAM,gCAAgC,CAAC;AAY7E,UAAU,OAAQ,SAAQ,aAAa;CACtC;AAED,MAAM,CAAC,OAAO,OAAO,MAAO,SAAQ,YAAa,YAAW,OAAO;IAC/D,iBAAiB;IAMjB,OAAO;IAWP,SAAS,CAAC,SAAS,EAAE,MAAM;CA0B9B"}
