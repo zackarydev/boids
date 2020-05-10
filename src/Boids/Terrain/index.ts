@@ -11,7 +11,8 @@ import { SQUARE_TERRAIN_DEFINITIONS, SQUARE_SIZE } from "./constants";
 export interface  ITerrain { 
     layer: IRenderingLayer;
 
-    getSquareAtLocation(position: Vector2D): ISquare;
+    getSquareAtLocation(position: Vector2D): ISquare | null;
+    getSquareAtCoord(x: number, y: number): ISquare | null;
 }
 
 export default class Terrain implements ITerrain {
@@ -72,26 +73,39 @@ export default class Terrain implements ITerrain {
         }
     }
 
-    getSquareAtLocation(position: Vector2D): ISquare {
+    getSquareAtCoord(x: number, y: number): ISquare | null {
+        if(x > this.squares[0].length) {
+            return null;
+        }
+        if(y > this.squares.length) {
+            return null;
+        }
+        if(!this.squares || !this.squares[y] || !this.squares[y][x]) {
+            return null;
+        }
+        return this.squares[y][x];
+    }
+
+    getSquareAtLocation(position: Vector2D): ISquare | null {
         const row = Math.floor(position.x2/SQUARE_SIZE);
         const col = Math.floor(position.x1/SQUARE_SIZE);
         if(col > this.squares[0].length) {
-            ;;debugger;;
+            return null;
         }
         if(row > this.squares.length) {
-            ;;debugger;;
+            return null;
         }
         if(!this.squares || !this.squares[row] || !this.squares[row][col]) {
-            ;;debugger;;
+            return null;
         }
         return this.squares[row][col];
     }
 
     getTerrainType(x: number, y: number) {
         const height = this.heightMap.scaled2D(x, y);
-        // const humidity = this.humidityMap.scaled2D(x, y);
+        const humidity = this.humidityMap.scaled2D(x, y);
         const moisture = this.moistureMap.scaled2D(x, y);
-        const squareType = this.squareTypeFromHeight(height, 0, moisture);
+        const squareType = this.squareTypeFromHeight(height, humidity, moisture);
 
         return squareType;
     }
@@ -100,11 +114,11 @@ export default class Terrain implements ITerrain {
         let foundType = null;
         SQUARE_TERRAIN_DEFINITIONS.forEach((values: TerrainDefinitions, type: SquareType) => {
             if(height >= values.height.min && height <= values.height.max) {
-                // if(humidity >= values.humidity.min && humidity <= values.humidity.max) {
+                if(humidity >= values.humidity.min && humidity <= values.humidity.max) {
                     if(moisture >= values.moisture.min && moisture <= values.moisture.max) {
                         foundType = type;
                     }
-                // }
+                }
             }
         });
         if(foundType === null) {

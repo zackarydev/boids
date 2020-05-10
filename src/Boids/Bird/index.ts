@@ -12,13 +12,16 @@ import {
     MAX_BIRD_ENERGY,
 } from '../constants';
 import { fromDegree, getAngle } from '../helpers';
+import { BirdColor } from "../colors";
+
 import { IBirdBehavior } from "../Behavior/BirdBehavior";
 import Cohesion from "../Rules/BirdRules/Cohesion";
 import Alignment from "../Rules/BirdRules/Alignment";
 import Separation from "../Rules/BirdRules/Separation";
-import { BirdColor } from "../colors";
-import Hunger from "../Rules/SelfRules/Hunger";
+import Hunger from "../Rules/BirdRules/Hunger";
+
 import { ISelfBehavior } from "../Behavior/SelfBehavior";
+import Eating from "../Rules/SelfRules/Eating";
 
 export interface IBird extends IEntity {
     position: Vector2D;
@@ -63,24 +66,23 @@ export default class Bird implements IBird {
             .multiply(BIRD_SPEED);
         this.acceleration = Vector2D.ZERO();
 
-        this.energy = MAX_BIRD_ENERGY/2 + MAX_BIRD_ENERGY/2 * Math.random();
+        this.energy = MAX_BIRD_ENERGY;
 
         this.birdRules = [
             new Cohesion(this),
             new Alignment(this),
             new Separation(this),
+            new Hunger(this),
         ];
 
         this.selfRules = [
-            new Hunger(this),
+            new Eating(this),
         ];
 
         this.landed = false;
     }
 
     resetAccumulators() {
-        this.acceleration.null();
-
         for(let i = 0; i<this.birdRules.length; i++) {
             this.birdRules[i].reset();
         }
@@ -110,10 +112,12 @@ export default class Bird implements IBird {
     
             // Flock mechanics
             if(perceivedBirdCount !== 0) {
+                let force
                 for(let i = 0; i<this.birdRules.length; i++) {
-                    this.acceleration.add(
-                        this.birdRules[i].perform(perceivedBirdCount)
-                    );
+                    force = this.birdRules[i].perform(perceivedBirdCount);
+                    if(force) {
+                        this.acceleration.add(force);
+                    }
                 }
                 // TODO: Limit acceleration.
             }
@@ -121,9 +125,9 @@ export default class Bird implements IBird {
         this.checkVelocity();
     }
 
-    performSenses() {
+    performSenses(deltaTime: number) {
         for(let i = 0; i<this.selfRules.length; i++) {
-            this.selfRules[i].perform();
+            this.selfRules[i].perform(deltaTime);
         }
     }
 
@@ -155,7 +159,7 @@ export default class Bird implements IBird {
     }
 
     update(deltaTime: number) {
-        this.performSenses();
+        this.performSenses(deltaTime);
         this.performManeuvers(this.boids.birds);
 
         if(!this.landed) {
@@ -166,11 +170,9 @@ export default class Bird implements IBird {
             );
         }
         this.velocity.add(this.acceleration);
+        this.acceleration.null();
         this.checkBoundary();
 
-        for(let i = 0; i<this.selfRules.length; i++) {
-            this.selfRules[i].decrement(deltaTime);
-        }
         if(this.energy < 0) {
             this.die();
         }
@@ -184,7 +186,7 @@ export default class Bird implements IBird {
         context.lineTo(this.position.x1 - BIRD_WIDTH/2, this.position.x2 + BIRD_HEIGHT/2);
         context.lineTo(this.position.x1 - BIRD_WIDTH/2, this.position.x2 - BIRD_HEIGHT/2);
         context.closePath();
-        context.stroke();
+        context.fill();
 
         // context.strokeStyle = 'green';
         // context.beginPath();

@@ -2,8 +2,7 @@ import { IBird } from "../../Bird";
 
 export interface ISelfBehavior {
     reset(): void;
-    perform(): void;
-    decrement(deltaTime: number): void;
+    perform(deltaTime: number): void;
 }
 
 export default abstract class SelfBehavior implements ISelfBehavior {
@@ -19,8 +18,5 @@ export default abstract class SelfBehavior implements ISelfBehavior {
         this.value = 0;
     }
 
-    abstract perform(): void;
-
-    abstract decrement(deltaTime: number): void;
-
+    abstract perform(deltaTime: number): void;
 }

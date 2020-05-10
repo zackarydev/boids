@@ -1,24 +1,21 @@
 import SelfBehavior, { ISelfBehavior } from "../../../Behavior/SelfBehavior";
-import { BIRD_START_HUNGER_ENERGY, BIRD_EATING_SPEED, MAX_BIRD_ENERGY, ACCELERATION_ENERGY_COST, LIVING_ENERGY_COST, BIRD_VISUAL_RANGE } from "../../../constants";
+import { 
+    BIRD_EATING_SPEED,
+    MAX_BIRD_ENERGY,
+    ACCELERATION_ENERGY_COST,
+    LIVING_ENERGY_COST,
+    // BIRD_VISUAL_RANGE
+} from "../../../constants";
 import Boids from "../../..";
 
-interface IHunger extends ISelfBehavior {
+interface IEating extends ISelfBehavior {
 }
 
-export default class Hunger extends SelfBehavior implements IHunger {
-    perform() {
-        if(this.bird.energy < BIRD_START_HUNGER_ENERGY) {
-            const square = Boids.instance.terrain.getSquareAtLocation(this.bird.position);
-            if(square && square.foodLevel > 0) {
-                this.bird.landed = true;
-            }
-        }
-    }
-
-    decrement(deltaTime: number) {
+export default class Eating extends SelfBehavior implements IEating {
+    perform(deltaTime: number) {
         if(this.bird.landed) {
             const square = Boids.instance.terrain.getSquareAtLocation(this.bird.position);
-            if(square.foodLevel > 0) {
+            if(square && square.foodLevel > 0) {
                 const potentialConsumption = BIRD_EATING_SPEED * deltaTime;
                 let actualConsumption = potentialConsumption;
                 if(potentialConsumption > square.foodLevel) {
