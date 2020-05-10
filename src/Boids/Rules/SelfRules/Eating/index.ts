@@ -2,9 +2,6 @@ import SelfBehavior, { ISelfBehavior } from "../../../Behavior/SelfBehavior";
 import { 
     BIRD_EATING_SPEED,
     MAX_BIRD_ENERGY,
-    ACCELERATION_ENERGY_COST,
-    LIVING_ENERGY_COST,
-    // BIRD_VISUAL_RANGE
 } from "../../../constants";
 import Boids from "../../..";
 
@@ -28,14 +25,12 @@ export default class Eating extends SelfBehavior implements IEating {
                 // birds will consume everything until there is no more food.
                 square.foodLevel -= actualConsumption;
                 this.bird.energy += actualConsumption;
+                if(this.bird.energy >= MAX_BIRD_ENERGY) {
+                    this.bird.landed = false;
+                }
             } else {
                 this.bird.landed = false;
             }
         }
-
-        this.bird.energy -= (
-            ACCELERATION_ENERGY_COST * this.bird.acceleration.magnitude() * deltaTime * deltaTime +
-            LIVING_ENERGY_COST * deltaTime
-        );
     }
 }

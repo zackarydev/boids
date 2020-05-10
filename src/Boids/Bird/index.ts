@@ -22,6 +22,7 @@ import Hunger from "../Rules/BirdRules/Hunger";
 
 import { ISelfBehavior } from "../Behavior/SelfBehavior";
 import Eating from "../Rules/SelfRules/Eating";
+import Exhaustion from "../Rules/SelfRules/Exhaustion";
 
 export interface IBird extends IEntity {
     position: Vector2D;
@@ -76,6 +77,7 @@ export default class Bird implements IBird {
         ];
 
         this.selfRules = [
+            new Exhaustion(this),
             new Eating(this),
         ];
 
