@@ -4,15 +4,18 @@ import { LayerIndex, BIRD_COUNT } from './constants';
 
 import Bird, { IBird, } from './Bird';
 import Terrain, { ITerrain } from './Terrain';
-import MouseTools, { IMouseTools } from './MouseTools';
+import MouseTools, { IMouseToolsManager } from './MouseTools';
 
 export default class Boids {
 
     static instance: Boids;
 
+    maxX: number;
+    maxY: number;
+
     engine: IEngine;
     terrain: ITerrain;
-    mouseTools: IMouseTools;
+    mouseTools: IMouseToolsManager;
 
     birdLayer: IRenderingLayer;
     birds: Array<IBird>;
@@ -21,7 +24,10 @@ export default class Boids {
         Boids.instance = this;
         this.mouseTools = new MouseTools();
         this.terrain = new Terrain();
+
         this.birdLayer = new RenderingLayer(LayerIndex.BIRDS, LayerType.DYNAMIC);
+        this.maxX = this.birdLayer.getWidth();
+        this.maxY = this.birdLayer.getHeight();
 
         this.birds = [];
         for(let i = 0; i<BIRD_COUNT; i++) {
@@ -29,9 +35,7 @@ export default class Boids {
             const bird = new Bird(
                 this,
                 Math.random() * this.birdLayer.getWidth(), 
-                Math.random() * this.birdLayer.getHeight(),
-                this.birdLayer.getWidth(),
-                this.birdLayer.getHeight(),
+                Math.random() * this.birdLayer.getHeight()
             );
 
             this.birds.push(bird);

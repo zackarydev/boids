@@ -1,6 +1,6 @@
 import Vector2D from "../../../Vector2D";
 import { IBird } from "../../../Bird";
-import Behavior, { IBirdBehavior } from '../../../Behavior/BirdBehavior';
+import Behavior, { IBirdBehavior } from '..';
 import { BIRD_SPEED, BIRD_SEPARATION_DISTANCE, BIRD_SEPARATION_EAGERNESS } from "../../../constants";
 
 interface ISeparation extends IBirdBehavior {

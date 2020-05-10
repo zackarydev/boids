@@ -2,7 +2,7 @@ import Vector2D from "../../../Vector2D";
 import Boids from "../../..";
 import { IBird } from "../../../Bird";
 
-import Behavior, { IBirdBehavior } from '../../../Behavior/BirdBehavior';
+import Behavior, { IBirdBehavior } from '..';
 
 import { 
     BIRD_VISUAL_RANGE, 

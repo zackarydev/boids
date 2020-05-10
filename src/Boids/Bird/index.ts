@@ -1,9 +1,8 @@
 import { IEntity } from "@zacktherrien/typescript-render-engine";
-
 import Vector2D from "../Vector2D";
-
 import Boids from '../';
 
+// Constants, helpers, colors
 import { 
     BIRD_WIDTH, 
     BIRD_HEIGHT, 
@@ -11,18 +10,19 @@ import {
     BIRD_VISUAL_RANGE,
     MAX_BIRD_ENERGY,
 } from '../constants';
-import { fromDegree, getAngle } from '../helpers';
 import { BirdColor } from "../colors";
+import { fromDegree, getAngle } from '../helpers';
 
+// Behaviors
 import { IBirdBehavior } from "../Behavior/BirdBehavior";
-import Cohesion from "../Rules/BirdRules/Cohesion";
-import Alignment from "../Rules/BirdRules/Alignment";
-import Separation from "../Rules/BirdRules/Separation";
-import Hunger from "../Rules/BirdRules/Hunger";
+import Cohesion from "../Behavior/BirdBehavior/Cohesion";
+import Alignment from "../Behavior/BirdBehavior/Alignment";
+import Separation from "../Behavior/BirdBehavior/Separation";
+import Hunger from "../Behavior/BirdBehavior/Hunger";
 
 import { ISelfBehavior } from "../Behavior/SelfBehavior";
-import Eating from "../Rules/SelfRules/Eating";
-import Exhaustion from "../Rules/SelfRules/Exhaustion";
+import Eating from "../Behavior/SelfBehavior/Eating";
+import Exhaustion from "../Behavior/SelfBehavior/Exhaustion";
 
 export interface IBird extends IEntity {
     position: Vector2D;
@@ -37,8 +37,6 @@ export interface IBird extends IEntity {
 export default class Bird implements IBird {
     
     boids: Boids;
-    maxX: number;
-    maxY: number;
 
     position: Vector2D;
     velocity: Vector2D;
@@ -51,11 +49,8 @@ export default class Bird implements IBird {
     birdRules: Array<IBirdBehavior>;
     selfRules: Array<ISelfBehavior>;
 
-    constructor(boids: Boids, initialX: number, initialY: number, maxX: number, maxY: number) {
+    constructor(boids: Boids, initialX: number, initialY: number) {
         this.boids = boids;
-
-        this.maxX = maxX;
-        this.maxY = maxY;
 
         this.position = new Vector2D(initialX, initialY);
         const randomAngle = fromDegree(Math.random() * 360);
@@ -64,7 +59,7 @@ export default class Bird implements IBird {
             Math.sin(randomAngle)
         )
             .normalize()
-            .multiply(BIRD_SPEED);
+            .multiply(BIRD_SPEED * Math.random());
         this.acceleration = Vector2D.ZERO();
 
         this.energy = MAX_BIRD_ENERGY * 0.5 + MAX_BIRD_ENERGY * Math.random();
@@ -135,13 +130,13 @@ export default class Bird implements IBird {
 
     checkBoundary() {
         if(this.position.x1 < 0){
-            this.position.x1 = this.maxX;
-        } else if(this.position.x1 > this.maxX){
+            this.position.x1 = Boids.instance.maxX;
+        } else if(this.position.x1 > Boids.instance.maxX){
             this.position.x1 = 0;
         }
         if(this.position.x2 < 0){
-            this.position.x2 = this.maxY;
-        } else if(this.position.x2 > this.maxY){
+            this.position.x2 = Boids.instance.maxY;
+        } else if(this.position.x2 > Boids.instance.maxY){
             this.position.x2 = 0;
         }
     }

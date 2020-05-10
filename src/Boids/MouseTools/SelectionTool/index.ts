@@ -1,7 +1,7 @@
-import { IEntity } from "@zacktherrien/typescript-render-engine";
 import Vector2D from "../../Vector2D";
+import { IMouseTool } from "..";
 
-export interface ISelectionTool extends IEntity{
+export interface ISelectionTool extends IMouseTool {
     updatePosition(newPosition: Vector2D): void;
     getGeometry(): {
         top: number;

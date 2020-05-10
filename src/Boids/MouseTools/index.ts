@@ -1,20 +1,30 @@
-import { IRenderingLayer, RenderingLayer, LayerType } from "@zacktherrien/typescript-render-engine";
+import { IRenderingLayer, RenderingLayer, LayerType, IEntity } from "@zacktherrien/typescript-render-engine";
 import { LayerIndex } from "../constants";
 import Vector2D from "../Vector2D";
 import Boids from "..";
-import SelectionTool, { ISelectionTool } from "./SelectionTool";
+import SelectionTool from "./SelectionTool";
 
-export interface IMouseTools {
+export interface IMouseTool extends IEntity {
+    updatePosition(newPosition: Vector2D): void;
+    getGeometry(): {
+        top: number;
+        left: number;
+        width: number;
+        height: number;
+    };
+}
+
+export interface IMouseToolsManager {
     layer: IRenderingLayer;
 }
 
-export default class MouseTools implements IMouseTools {
+export default class MouseToolsManager implements IMouseToolsManager {
     layer: IRenderingLayer;
 
     initialMouseLocation: Vector2D;
     mouseLocation: Vector2D;
 
-    currentTool: ISelectionTool | null;
+    currentTool: IMouseTool | null;
 
     constructor() {
         this.layer = new RenderingLayer(LayerIndex.TOOLS, LayerType.STATIC);
@@ -30,7 +40,7 @@ export default class MouseTools implements IMouseTools {
         document.addEventListener('contextmenu', event => event.preventDefault());
     }
 
-    chooseTool(tool: ISelectionTool) {
+    chooseTool(tool: IMouseTool) {
         this.resetTool();
 
         this.currentTool = tool;

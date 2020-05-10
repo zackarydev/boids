@@ -1,4 +1,4 @@
-import SelfBehavior, { ISelfBehavior } from "../../../Behavior/SelfBehavior";
+import SelfBehavior, { ISelfBehavior } from "..";
 import { 
     BIRD_EATING_SPEED,
     MAX_BIRD_ENERGY,

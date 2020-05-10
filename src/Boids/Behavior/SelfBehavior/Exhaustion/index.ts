@@ -1,4 +1,4 @@
-import SelfBehavior, { ISelfBehavior } from "../../../Behavior/SelfBehavior";
+import SelfBehavior, { ISelfBehavior } from "..";
 import { 
     ACCELERATION_ENERGY_COST,
     LIVING_ENERGY_COST,

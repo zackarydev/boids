@@ -1,6 +1,6 @@
 import Vector2D from "../../../Vector2D";
 import { IBird } from "../../../Bird";
-import Behavior, { IBirdBehavior } from '../../../Behavior/BirdBehavior';
+import Behavior, { IBirdBehavior } from '..';
 import { BIRD_SPEED, BIRD_COHESION_EAGERNESS } from "../../../constants";
 
 interface ICohesion extends IBirdBehavior {
