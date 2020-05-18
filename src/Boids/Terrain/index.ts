@@ -1,4 +1,4 @@
-import { RenderingLayer, LayerType, IRenderingLayer } from "@zacktherrien/typescript-render-engine";
+import { IDeferredLayer, DeferredLayer } from "@zacktherrien/typescript-render-engine";
 import FastSimplexNoise from '../../../node_modules/fast-simplex-noise/src';
 
 import Square, { ISquare } from "./Square";
@@ -6,10 +6,10 @@ import Vector2D from "../Vector2D";
 
 import { LayerIndex } from "../constants";
 import { SquareType, TerrainDefinitions } from "./types";
-import { SQUARE_TERRAIN_DEFINITIONS, SQUARE_SIZE } from "./constants";
+import { SQUARE_TERRAIN_DEFINITIONS, SQUARE_SIZE, TERRAIN_UPDATE_RATE } from "./constants";
 
 export interface  ITerrain { 
-    layer: IRenderingLayer;
+    layer: IDeferredLayer;
 
     getSquareAtLocation(position: Vector2D): ISquare | null;
     getSquareAtCoord(x: number, y: number): ISquare | null;
@@ -17,7 +17,7 @@ export interface  ITerrain {
 
 export default class Terrain implements ITerrain {
 
-    layer: IRenderingLayer;
+    layer: IDeferredLayer;
 
     squares: Array<Array<ISquare>>;
 
@@ -28,7 +28,8 @@ export default class Terrain implements ITerrain {
     moistureMap: FastSimplexNoise;
 
     constructor() {
-        this.layer = new RenderingLayer(LayerIndex.BACKGROUND, LayerType.STATIC);
+        this.layer = new DeferredLayer(TERRAIN_UPDATE_RATE, LayerIndex.BACKGROUND);
+        this.layer.update(TERRAIN_UPDATE_RATE); // hacky :(
 
         this.heightMap = new FastSimplexNoise({ 
             frequency: 0.01, 

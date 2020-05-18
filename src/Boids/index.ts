@@ -1,4 +1,4 @@
-import Engine, { IEngine, RenderingLayer, LayerType, IRenderingLayer } from '@zacktherrien/typescript-render-engine';
+import Engine, { IEngine, DynamicLayer, IRenderingLayer } from '@zacktherrien/typescript-render-engine';
 
 import { LayerIndex, BIRD_COUNT } from './constants';
 
@@ -25,7 +25,7 @@ export default class Boids {
         this.mouseTools = new MouseTools();
         this.terrain = new Terrain();
 
-        this.birdLayer = new RenderingLayer(LayerIndex.BIRDS, LayerType.DYNAMIC);
+        this.birdLayer = new DynamicLayer(LayerIndex.BIRDS);
         this.maxX = this.birdLayer.getWidth();
         this.maxY = this.birdLayer.getHeight();
 
@@ -45,6 +45,7 @@ export default class Boids {
         this.engine = new Engine();
 
         this.engine.registerLayer(this.terrain.layer);
+        this.engine.registerLayer(this.mouseTools.layer);
         this.engine.registerLayer(this.birdLayer);
         this.engine.start();
         this.terrain.layer.render();

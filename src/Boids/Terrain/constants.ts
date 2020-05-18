@@ -1,5 +1,7 @@
 import { SquareType, TerrainDefinitions } from "./types";
 
+export const TERRAIN_UPDATE_RATE = 5000;
+
 export const SQUARE_SIZE = 6;
 
 export const SQUARE_FOODS: Map<SquareType, number> = new Map([

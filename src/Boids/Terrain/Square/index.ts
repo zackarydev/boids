@@ -45,6 +45,9 @@ export default class Square implements ISquare {
         return this.center;
     }
 
+    update(deltaTime: number) {
+    }
+
     render(context: CanvasRenderingContext2D) {
         context.fillStyle = SquareColors[this.type];
         context.fillRect(this.x * SQUARE_SIZE, this.y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);

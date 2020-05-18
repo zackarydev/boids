@@ -1,4 +1,4 @@
-import { IRenderingLayer, RenderingLayer, LayerType, IEntity } from "@zacktherrien/typescript-render-engine";
+import { IEntity, StaticLayer, IStaticLayer } from "@zacktherrien/typescript-render-engine";
 import { LayerIndex } from "../constants";
 import Vector2D from "../Vector2D";
 import Boids from "..";
@@ -15,11 +15,11 @@ export interface IMouseTool extends IEntity {
 }
 
 export interface IMouseToolsManager {
-    layer: IRenderingLayer;
+    layer: IStaticLayer;
 }
 
 export default class MouseToolsManager implements IMouseToolsManager {
-    layer: IRenderingLayer;
+    layer: IStaticLayer;
 
     initialMouseLocation: Vector2D;
     mouseLocation: Vector2D;
@@ -27,7 +27,7 @@ export default class MouseToolsManager implements IMouseToolsManager {
     currentTool: IMouseTool | null;
 
     constructor() {
-        this.layer = new RenderingLayer(LayerIndex.TOOLS, LayerType.STATIC);
+        this.layer = new StaticLayer(LayerIndex.TOOLS);
 
         this.currentTool = null;
 
@@ -50,7 +50,7 @@ export default class MouseToolsManager implements IMouseToolsManager {
     resetTool() {
         if (this.currentTool) {
             this.layer.removeEntity(this.currentTool);
-            this.layer.render();
+            this.layer.allowRenderOnNextFrame();
         }
     }
 
@@ -68,9 +68,9 @@ export default class MouseToolsManager implements IMouseToolsManager {
         this.mouseLocation = new Vector2D(e.offsetX, e.offsetY);
 
         if(this.currentTool) {
+            this.layer.allowRenderOnNextFrame();
+            
             this.currentTool.updatePosition(this.mouseLocation);
-    
-            this.layer.render();
         }
     }
 
