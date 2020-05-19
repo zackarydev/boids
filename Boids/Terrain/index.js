@@ -10,7 +10,8 @@ const constants_1 = require("../constants");
 const constants_2 = require("./constants");
 class Terrain {
     constructor() {
-        this.layer = new typescript_render_engine_1.RenderingLayer(constants_1.LayerIndex.BACKGROUND, typescript_render_engine_1.LayerType.STATIC);
+        this.layer = new typescript_render_engine_1.DeferredLayer(constants_2.TERRAIN_UPDATE_RATE, constants_1.LayerIndex.BACKGROUND);
+        this.layer.update(constants_2.TERRAIN_UPDATE_RATE);
         this.heightMap = new src_1.default({
             frequency: 0.01,
             max: 1,
@@ -49,26 +50,29 @@ class Terrain {
             this.squares.push(currentRow);
         }
     }
+    getSquareAtCoord(x, y) {
+        if (x > this.squares[0].length) {
+            return null;
+        }
+        if (y > this.squares.length) {
+            return null;
+        }
+        if (!this.squares || !this.squares[y] || !this.squares[y][x]) {
+            return null;
+        }
+        return this.squares[y][x];
+    }
     getSquareAtLocation(position) {
         const row = Math.floor(position.x2 / constants_2.SQUARE_SIZE);
         const col = Math.floor(position.x1 / constants_2.SQUARE_SIZE);
         if (col > this.squares[0].length) {
-            ;
-            ;
-            debugger;
-            ;
+            return null;
         }
         if (row > this.squares.length) {
-            ;
-            ;
-            debugger;
-            ;
+            return null;
         }
         if (!this.squares || !this.squares[row] || !this.squares[row][col]) {
-            ;
-            ;
-            debugger;
-            ;
+            return null;
         }
         return this.squares[row][col];
     }

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LANDABLE_SQUARE_TYPES = exports.SquareType = void 0;
 var SquareType;
 (function (SquareType) {
     SquareType[SquareType["DEEP_WATER"] = 0] = "DEEP_WATER";
@@ -12,3 +13,11 @@ var SquareType;
     SquareType[SquareType["SNOW_PEAK"] = 7] = "SNOW_PEAK";
 })(SquareType = exports.SquareType || (exports.SquareType = {}));
 ;
+exports.LANDABLE_SQUARE_TYPES = [
+    SquareType.SAND,
+    SquareType.SWAMP,
+    SquareType.GRASSLAND,
+    SquareType.RAIN_FOREST,
+    SquareType.MOUNTAIN,
+    SquareType.SNOW_PEAK,
+];

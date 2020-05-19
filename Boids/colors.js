@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SquareColors = exports.BirdColor = void 0;
 const types_1 = require("./Terrain/types");
 exports.BirdColor = '#242124';
 exports.SquareColors = {

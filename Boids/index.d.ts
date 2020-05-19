@@ -1,19 +1,16 @@
 import { IEngine, IRenderingLayer } from '@zacktherrien/typescript-render-engine';
 import { IBird } from './Bird';
-import Vector2D from './Vector2D';
 import { ITerrain } from './Terrain';
+import { IMouseToolsManager } from './MouseTools';
 export default class Boids {
     static instance: Boids;
+    maxX: number;
+    maxY: number;
     engine: IEngine;
     terrain: ITerrain;
+    mouseTools: IMouseToolsManager;
     birdLayer: IRenderingLayer;
     birds: Array<IBird>;
-    isLeftClicked: boolean;
-    isRightClicked: boolean;
-    mouseLocation: Vector2D;
     constructor();
-    handleMouseDown(e: MouseEvent): void;
-    handleMouseMove(e: MouseEvent): void;
-    handleMouseUp(): void;
 }
 //# sourceMappingURL=index.d.ts.map

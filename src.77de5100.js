@@ -117,49 +117,25 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../node_modules/@zacktherrien/typescript-render-engine/dist/types.js":[function(require,module,exports) {
+})({"../node_modules/@zacktherrien/typescript-render-engine/dist/Engine/index.js":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var LayerType;
-(function (LayerType) {
-    LayerType[LayerType["STATIC"] = 0] = "STATIC";
-    LayerType[LayerType["DYNAMIC"] = 1] = "DYNAMIC";
-})(LayerType = exports.LayerType || (exports.LayerType = {}));
-var ResizeMethod;
-(function (ResizeMethod) {
-    ResizeMethod[ResizeMethod["FROM_ORIGIN"] = 0] = "FROM_ORIGIN";
-    ResizeMethod[ResizeMethod["FROM_CENTER"] = 1] = "FROM_CENTER";
-})(ResizeMethod = exports.ResizeMethod || (exports.ResizeMethod = {}));
-
-},{}],"../node_modules/@zacktherrien/typescript-render-engine/dist/Engine/index.js":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("../types");
 class Engine {
     constructor() {
-        this.staticLayers = [];
-        this.dynamicLayers = [];
+        this.layers = [];
+        this.layerCounter = 0;
         this.shouldRender = true;
         this.lastFrameRenderedTime = null;
         this.renderingId = null;
+        this.currentDeltaTime = 0;
         this.requestFrameA = this.requestFrameA.bind(this);
         this.requestFrameB = this.requestFrameB.bind(this);
     }
-    getLayer(layerIndex, layerType) {
-        if (layerType === types_1.LayerType.DYNAMIC) {
-            return this.dynamicLayers.find((layer) => layer.layerIndex === layerIndex) || null;
-        }
-        else {
-            return this.staticLayers.find((layer) => layer.layerIndex === layerIndex) || null;
-        }
+    getLayer(layerIndex) {
+        return this.layers.find((layer) => layer.layerIndex === layerIndex) || null;
     }
     registerLayer(layer) {
-        if (layer.layerType === types_1.LayerType.DYNAMIC) {
-            this.dynamicLayers.push(layer);
-        }
-        else {
-            this.staticLayers.push(layer);
-        }
+        this.layers.push(layer);
     }
     start() {
         this.shouldRender = true;
@@ -187,25 +163,34 @@ class Engine {
         if (!this.lastFrameRenderedTime) {
             this.lastFrameRenderedTime = timestamp;
         }
-        const deltaTime = timestamp - this.lastFrameRenderedTime;
+        this.currentDeltaTime = timestamp - this.lastFrameRenderedTime;
         this.lastFrameRenderedTime = timestamp;
-        for (let i = 0; i < this.dynamicLayers.length; i++) {
-            this.dynamicLayers[i].update(deltaTime);
-            this.dynamicLayers[i].render();
+        for (this.layerCounter = 0; this.layerCounter < this.layers.length; this.layerCounter++) {
+            this.layers[this.layerCounter].update(this.currentDeltaTime);
+            this.layers[this.layerCounter].render();
         }
     }
 }
 exports.default = Engine;
 
-},{"../types":"../node_modules/@zacktherrien/typescript-render-engine/dist/types.js"}],"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/index.js":[function(require,module,exports) {
+},{}],"../node_modules/@zacktherrien/typescript-render-engine/dist/types.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var ResizeMethod;
+(function (ResizeMethod) {
+    ResizeMethod[ResizeMethod["FROM_ORIGIN"] = 0] = "FROM_ORIGIN";
+    ResizeMethod[ResizeMethod["FROM_CENTER"] = 1] = "FROM_CENTER";
+})(ResizeMethod = exports.ResizeMethod || (exports.ResizeMethod = {}));
+
+},{}],"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/index.js":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const types_1 = require("../types");
 class RenderingLayer {
-    constructor(layerIndex, layerType, initialWidth, initialHeight, initialX = 0, initialY = 0) {
+    constructor(layerIndex, initialWidth, initialHeight, initialX = 0, initialY = 0) {
         this.layerIndex = layerIndex;
-        this.layerType = layerType;
         this.entities = [];
+        this.entityCounter = 0;
         this.width = initialWidth === undefined ? document.body.clientWidth + 1 : initialWidth;
         this.height = initialHeight === undefined ? document.body.clientHeight + 1 : initialHeight;
         this.x = initialX;
@@ -247,11 +232,8 @@ class RenderingLayer {
         this.context.canvas.style.top = `${this.y}px`;
     }
     addEntity(entity) {
-        if (!this._entityIsRenderable(entity)) {
-            throw new Error('All entities must have a render function.');
-        }
-        if (this.layerType === types_1.LayerType.DYNAMIC && !this._entityIsUpdatable(entity)) {
-            throw new Error('All entities of dynamic layers must have an updater function.');
+        if (!this._isEntityValid(entity)) {
+            throw new Error('Invalid entity cannot be added to this layer.');
         }
         this.entities.push(entity);
     }
@@ -280,17 +262,15 @@ class RenderingLayer {
         this.context.clearRect(-1, -1, this.width, this.height);
     }
     update(deltaTime) {
-        if (this.layerType !== types_1.LayerType.DYNAMIC) {
-            return;
-        }
-        for (let i = 0; i < this.entities.length; i++) {
-            this.entities[i].update(deltaTime);
+        var _a, _b;
+        for (this.entityCounter = 0; this.entityCounter < this.entities.length; this.entityCounter++) {
+            (_b = (_a = this.entities[this.entityCounter]).update) === null || _b === void 0 ? void 0 : _b.call(_a, deltaTime);
         }
     }
     render() {
         this.clear();
-        for (let i = 0; i < this.entities.length; i++) {
-            this.entities[i].render(this.context);
+        for (this.entityCounter = 0; this.entityCounter < this.entities.length; this.entityCounter++) {
+            this.entities[this.entityCounter].render(this.context);
         }
     }
     _entityIsRenderable(entity) {
@@ -308,7 +288,73 @@ class RenderingLayer {
 }
 exports.RenderingLayer = RenderingLayer;
 
-},{"../types":"../node_modules/@zacktherrien/typescript-render-engine/dist/types.js"}],"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js":[function(require,module,exports) {
+},{"../types":"../node_modules/@zacktherrien/typescript-render-engine/dist/types.js"}],"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/StaticLayer/index.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const __1 = require("..");
+class StaticLayer extends __1.RenderingLayer {
+    constructor(layerIndex, initialWidth, initialHeight, initialX = 0, initialY = 0) {
+        super(layerIndex, initialWidth, initialHeight, initialX, initialY);
+        this.rerenderNextFrame = false;
+    }
+    allowRenderOnNextFrame() {
+        this.rerenderNextFrame = true;
+    }
+    _isEntityValid(entity) {
+        return super._entityIsRenderable(entity);
+    }
+    render() {
+        if (this.rerenderNextFrame) {
+            this.rerenderNextFrame = false;
+            super.render();
+        }
+    }
+}
+exports.StaticLayer = StaticLayer;
+
+},{"..":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/index.js"}],"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/DynamicLayer/index.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const __1 = require("..");
+class DynamicLayer extends __1.RenderingLayer {
+    constructor(layerIndex, initialWidth, initialHeight, initialX = 0, initialY = 0) {
+        super(layerIndex, initialWidth, initialHeight, initialX, initialY);
+    }
+    _isEntityValid(entity) {
+        return super._entityIsRenderable(entity) && this._entityIsUpdatable(entity);
+    }
+}
+exports.DynamicLayer = DynamicLayer;
+
+},{"..":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/index.js"}],"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/DeferredLayer/index.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const __1 = require("..");
+class DeferredLayer extends __1.RenderingLayer {
+    constructor(deferredTime, layerIndex, initialWidth, initialHeight, initialX = 0, initialY = 0) {
+        super(layerIndex, initialWidth, initialHeight, initialX, initialY);
+        this.deferredTime = deferredTime;
+        this.elapsedTimeSinceRender = 0;
+    }
+    _isEntityValid(entity) {
+        return super._entityIsRenderable(entity) && this._entityIsUpdatable(entity);
+    }
+    update(deltaTime) {
+        this.elapsedTimeSinceRender += deltaTime;
+        if (this.elapsedTimeSinceRender > this.deferredTime) {
+            super.update(deltaTime);
+        }
+    }
+    render() {
+        if (this.elapsedTimeSinceRender > this.deferredTime) {
+            this.elapsedTimeSinceRender = 0;
+            super.render();
+        }
+    }
+}
+exports.DeferredLayer = DeferredLayer;
+
+},{"..":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/index.js"}],"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js":[function(require,module,exports) {
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -318,39 +364,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Engine_1 = __importDefault(require("./Engine"));
+exports.default = Engine_1.default;
 var RenderingLayer_1 = require("./RenderingLayer");
 exports.RenderingLayer = RenderingLayer_1.RenderingLayer;
+var StaticLayer_1 = require("./RenderingLayer/StaticLayer");
+exports.StaticLayer = StaticLayer_1.StaticLayer;
+var DynamicLayer_1 = require("./RenderingLayer/DynamicLayer");
+exports.DynamicLayer = DynamicLayer_1.DynamicLayer;
+var DeferredLayer_1 = require("./RenderingLayer/DeferredLayer");
+exports.DeferredLayer = DeferredLayer_1.DeferredLayer;
 __export(require("./types"));
-exports.default = Engine_1.default;
 
-},{"./Engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/Engine/index.js","./RenderingLayer":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/index.js","./types":"../node_modules/@zacktherrien/typescript-render-engine/dist/types.js"}],"Boids/constants.ts":[function(require,module,exports) {
+},{"./Engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/Engine/index.js","./RenderingLayer":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/index.js","./RenderingLayer/StaticLayer":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/StaticLayer/index.js","./RenderingLayer/DynamicLayer":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/DynamicLayer/index.js","./RenderingLayer/DeferredLayer":"../node_modules/@zacktherrien/typescript-render-engine/dist/RenderingLayer/DeferredLayer/index.js","./types":"../node_modules/@zacktherrien/typescript-render-engine/dist/types.js"}],"Boids/constants.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.BIRD_HUNGER_LANDING_DESIRE = exports.BIRD_COMMUNAL_LANDING_DESIRE = exports.BIRD_ALIGNMENT_EAGERNESS = exports.BIRD_COHESION_EAGERNESS = exports.BIRD_SEPARATION_EAGERNESS = exports.BIRD_SEPARATION_DISTANCE = exports.BIRD_EATING_SPEED = exports.LIVING_ENERGY_COST = exports.ACCELERATION_ENERGY_COST = exports.MAX_BIRD_ENERGY = exports.BIRD_VISUAL_RANGE = exports.BIRD_SPEED = exports.BIRD_HEIGHT = exports.BIRD_WIDTH = exports.BIRD_COUNT = exports.LayerIndex = void 0;
 var LayerIndex;
 
 (function (LayerIndex) {
   LayerIndex[LayerIndex["BACKGROUND"] = 0] = "BACKGROUND";
   LayerIndex[LayerIndex["BIRDS"] = 1] = "BIRDS";
+  LayerIndex[LayerIndex["TOOLS"] = 2] = "TOOLS";
 })(LayerIndex = exports.LayerIndex || (exports.LayerIndex = {}));
 
 ;
-exports.BIRD_COUNT = 500;
+exports.BIRD_COUNT = 750;
 exports.BIRD_WIDTH = 4;
 exports.BIRD_HEIGHT = 2;
 exports.BIRD_SPEED = 100 / 1000;
 exports.BIRD_VISUAL_RANGE = 75;
-exports.MAX_BIRD_ENERGY = 1000;
-exports.ACCELERATION_ENERGY_COST = 1 / 100;
-exports.LIVING_ENERGY_COST = 1 / 1000;
-exports.BIRD_SEPARATION_DISTANCE = 2 * Math.sqrt(exports.BIRD_WIDTH * exports.BIRD_WIDTH + exports.BIRD_HEIGHT * exports.BIRD_HEIGHT);
-exports.BIRD_SEPARATION_EAGERNESS = 0.2;
+exports.MAX_BIRD_ENERGY = 500;
+exports.ACCELERATION_ENERGY_COST = 50 / 100;
+exports.LIVING_ENERGY_COST = 10 / 1000;
+exports.BIRD_EATING_SPEED = 150 / 1000;
+exports.BIRD_SEPARATION_DISTANCE = 1.5 * Math.sqrt(exports.BIRD_WIDTH * exports.BIRD_WIDTH + exports.BIRD_HEIGHT * exports.BIRD_HEIGHT);
+exports.BIRD_SEPARATION_EAGERNESS = 0.1;
 exports.BIRD_COHESION_EAGERNESS = 0.01;
 exports.BIRD_ALIGNMENT_EAGERNESS = 0.1;
-exports.BIRD_START_HUNGER_ENERGY = exports.MAX_BIRD_ENERGY / 2;
-exports.BIRD_EATING_SPEED = 50 / 1000;
+exports.BIRD_COMMUNAL_LANDING_DESIRE = 1;
+exports.BIRD_HUNGER_LANDING_DESIRE = 1;
 },{}],"Boids/Vector2D/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -364,101 +419,144 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var Vector2D = /*#__PURE__*/function () {
-  function Vector2D() {
-    var x1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var x2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+var Vector2D = function () {
+  var Vector2D = /*#__PURE__*/function () {
+    function Vector2D() {
+      var x1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var x2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-    _classCallCheck(this, Vector2D);
+      _classCallCheck(this, Vector2D);
 
-    this.x1 = x1;
-    this.x2 = x2;
-  }
+      this.x1 = x1;
+      this.x2 = x2;
+    }
 
-  _createClass(Vector2D, [{
-    key: "null",
-    value: function _null() {
-      this.x1 = 0;
-      this.x2 = 0;
-    }
-  }, {
-    key: "add",
-    value: function add(vector) {
-      this.x1 += vector.x1;
-      this.x2 += vector.x2;
-      return this;
-    }
-  }, {
-    key: "sub",
-    value: function sub(vector) {
-      this.x1 -= vector.x1;
-      this.x2 -= vector.x2;
-      return this;
-    }
-  }, {
-    key: "multiply",
-    value: function multiply(scalar) {
-      this.x1 *= scalar;
-      this.x2 *= scalar;
-      return this;
-    }
-  }, {
-    key: "divide",
-    value: function divide(scalar) {
-      this.x1 /= scalar;
-      this.x2 /= scalar;
-      return this;
-    }
-  }, {
-    key: "normalize",
-    value: function normalize() {
-      var mag = this.magnitude();
-
-      if (mag === 0) {
-        return Vector2D.ZERO();
+    _createClass(Vector2D, [{
+      key: "null",
+      value: function _null() {
+        this.x1 = 0;
+        this.x2 = 0;
       }
+    }, {
+      key: "add",
+      value: function add(vector) {
+        this.x1 += vector.x1;
+        this.x2 += vector.x2;
+        return this;
+      }
+    }, {
+      key: "sub",
+      value: function sub(vector) {
+        this.x1 -= vector.x1;
+        this.x2 -= vector.x2;
+        return this;
+      }
+    }, {
+      key: "multiply",
+      value: function multiply(scalar) {
+        this.x1 *= scalar;
+        this.x2 *= scalar;
+        return this;
+      }
+    }, {
+      key: "divide",
+      value: function divide(scalar) {
+        this.x1 /= scalar;
+        this.x2 /= scalar;
+        return this;
+      }
+    }, {
+      key: "normalize",
+      value: function normalize() {
+        var mag = this.magnitude();
 
-      return this.divide(mag);
-    }
-  }, {
-    key: "magnitude",
-    value: function magnitude() {
-      return Math.sqrt(this.x1 * this.x1 + this.x2 * this.x2);
-    }
-  }, {
-    key: "distance",
-    value: function distance(vector) {
-      return Math.sqrt(Math.pow(this.x1 - vector.x1, 2) + Math.pow(this.x2 - vector.x2, 2));
-    }
-  }, {
-    key: "clone",
-    value: function clone() {
-      return new Vector2D(this.x1, this.x2);
-    }
-  }], [{
-    key: "ZERO",
-    value: function ZERO() {
-      return new Vector2D(0, 0);
-    }
-  }, {
-    key: "ONE",
-    value: function ONE() {
-      return new Vector2D(1, 1);
-    }
-  }]);
+        if (mag === 0) {
+          return Vector2D.ZERO();
+        }
 
+        return this.divide(mag);
+      }
+    }, {
+      key: "magnitude",
+      value: function magnitude() {
+        return Math.sqrt(this.x1 * this.x1 + this.x2 * this.x2);
+      }
+    }, {
+      key: "distance",
+      value: function distance(vector) {
+        return Math.sqrt(Math.pow(this.x1 - vector.x1, 2) + Math.pow(this.x2 - vector.x2, 2));
+      }
+    }, {
+      key: "clone",
+      value: function clone() {
+        return new Vector2D(this.x1, this.x2);
+      }
+    }], [{
+      key: "ZERO",
+      value: function ZERO() {
+        return new Vector2D(0, 0);
+      }
+    }, {
+      key: "ONE",
+      value: function ONE() {
+        return new Vector2D(1, 1);
+      }
+    }]);
+
+    return Vector2D;
+  }();
+
+  Vector2D.CONST_ZERO = Vector2D.ZERO();
+  Vector2D.CONST_ONE = Vector2D.ONE();
   return Vector2D;
 }();
 
 exports.default = Vector2D;
-Vector2D.CONST_ZERO = Vector2D.ZERO();
-Vector2D.CONST_ONE = Vector2D.ONE();
-},{}],"Boids/helpers.ts":[function(require,module,exports) {
+},{}],"Boids/Terrain/types.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.LANDABLE_SQUARE_TYPES = exports.SquareType = void 0;
+var SquareType;
+
+(function (SquareType) {
+  SquareType[SquareType["DEEP_WATER"] = 0] = "DEEP_WATER";
+  SquareType[SquareType["SHORE_WATER"] = 1] = "SHORE_WATER";
+  SquareType[SquareType["SAND"] = 2] = "SAND";
+  SquareType[SquareType["SWAMP"] = 3] = "SWAMP";
+  SquareType[SquareType["GRASSLAND"] = 4] = "GRASSLAND";
+  SquareType[SquareType["RAIN_FOREST"] = 5] = "RAIN_FOREST";
+  SquareType[SquareType["MOUNTAIN"] = 6] = "MOUNTAIN";
+  SquareType[SquareType["SNOW_PEAK"] = 7] = "SNOW_PEAK";
+})(SquareType = exports.SquareType || (exports.SquareType = {}));
+
+;
+exports.LANDABLE_SQUARE_TYPES = [SquareType.SAND, SquareType.SWAMP, SquareType.GRASSLAND, SquareType.RAIN_FOREST, SquareType.MOUNTAIN, SquareType.SNOW_PEAK];
+},{}],"Boids/colors.ts":[function(require,module,exports) {
+"use strict";
+
+var _exports$SquareColors;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SquareColors = exports.BirdColor = void 0;
+
+var types_1 = require("./Terrain/types");
+
+exports.BirdColor = '#242124';
+exports.SquareColors = (_exports$SquareColors = {}, _defineProperty(_exports$SquareColors, types_1.SquareType.DEEP_WATER, '#006B99'), _defineProperty(_exports$SquareColors, types_1.SquareType.SHORE_WATER, '#008ECC'), _defineProperty(_exports$SquareColors, types_1.SquareType.SAND, '#e5d8c1'), _defineProperty(_exports$SquareColors, types_1.SquareType.SWAMP, '#555c45'), _defineProperty(_exports$SquareColors, types_1.SquareType.GRASSLAND, '#bbcba0'), _defineProperty(_exports$SquareColors, types_1.SquareType.RAIN_FOREST, '#92b29f'), _defineProperty(_exports$SquareColors, types_1.SquareType.MOUNTAIN, '#AAAAAA'), _defineProperty(_exports$SquareColors, types_1.SquareType.SNOW_PEAK, '#FFFFFF'), _exports$SquareColors);
+},{"./Terrain/types":"Boids/Terrain/types.ts"}],"Boids/helpers.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.flipVector = exports.getAngle = exports.fromDegree = void 0;
 
 exports.fromDegree = function (degree) {
   return degree * Math.PI / 180;
@@ -517,7 +615,7 @@ var BirdBehavior = function BirdBehavior(bird) {
 };
 
 exports.default = BirdBehavior;
-},{"../../Vector2D":"Boids/Vector2D/index.ts"}],"Boids/Rules/BirdRules/Cohesion/index.ts":[function(require,module,exports) {
+},{"../../Vector2D":"Boids/Vector2D/index.ts"}],"Boids/Behavior/BirdBehavior/Cohesion/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -552,12 +650,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var BirdBehavior_1 = __importDefault(require("../../../Behavior/BirdBehavior"));
+var __1 = __importDefault(require(".."));
 
 var constants_1 = require("../../../constants");
 
-var Cohesion = /*#__PURE__*/function (_BirdBehavior_1$defau) {
-  _inherits(Cohesion, _BirdBehavior_1$defau);
+var Cohesion = /*#__PURE__*/function (_1$default) {
+  _inherits(Cohesion, _1$default);
 
   var _super = _createSuper(Cohesion);
 
@@ -580,10 +678,10 @@ var Cohesion = /*#__PURE__*/function (_BirdBehavior_1$defau) {
   }]);
 
   return Cohesion;
-}(BirdBehavior_1.default);
+}(__1.default);
 
 exports.default = Cohesion;
-},{"../../../Behavior/BirdBehavior":"Boids/Behavior/BirdBehavior/index.ts","../../../constants":"Boids/constants.ts"}],"Boids/Rules/BirdRules/Alignment/index.ts":[function(require,module,exports) {
+},{"..":"Boids/Behavior/BirdBehavior/index.ts","../../../constants":"Boids/constants.ts"}],"Boids/Behavior/BirdBehavior/Alignment/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -618,12 +716,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var BirdBehavior_1 = __importDefault(require("../../../Behavior/BirdBehavior"));
+var __1 = __importDefault(require(".."));
 
 var constants_1 = require("../../../constants");
 
-var Alignment = /*#__PURE__*/function (_BirdBehavior_1$defau) {
-  _inherits(Alignment, _BirdBehavior_1$defau);
+var Alignment = /*#__PURE__*/function (_1$default) {
+  _inherits(Alignment, _1$default);
 
   var _super = _createSuper(Alignment);
 
@@ -646,10 +744,10 @@ var Alignment = /*#__PURE__*/function (_BirdBehavior_1$defau) {
   }]);
 
   return Alignment;
-}(BirdBehavior_1.default);
+}(__1.default);
 
 exports.default = Alignment;
-},{"../../../Behavior/BirdBehavior":"Boids/Behavior/BirdBehavior/index.ts","../../../constants":"Boids/constants.ts"}],"Boids/Rules/BirdRules/Separation/index.ts":[function(require,module,exports) {
+},{"..":"Boids/Behavior/BirdBehavior/index.ts","../../../constants":"Boids/constants.ts"}],"Boids/Behavior/BirdBehavior/Separation/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -684,12 +782,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var BirdBehavior_1 = __importDefault(require("../../../Behavior/BirdBehavior"));
+var __1 = __importDefault(require(".."));
 
 var constants_1 = require("../../../constants");
 
-var Separation = /*#__PURE__*/function (_BirdBehavior_1$defau) {
-  _inherits(Separation, _BirdBehavior_1$defau);
+var Separation = /*#__PURE__*/function (_1$default) {
+  _inherits(Separation, _1$default);
 
   var _super = _createSuper(Separation);
 
@@ -717,68 +815,128 @@ var Separation = /*#__PURE__*/function (_BirdBehavior_1$defau) {
   }]);
 
   return Separation;
-}(BirdBehavior_1.default);
+}(__1.default);
 
 exports.default = Separation;
-},{"../../../Behavior/BirdBehavior":"Boids/Behavior/BirdBehavior/index.ts","../../../constants":"Boids/constants.ts"}],"Boids/Terrain/types.ts":[function(require,module,exports) {
+},{"..":"Boids/Behavior/BirdBehavior/index.ts","../../../constants":"Boids/constants.ts"}],"Boids/Terrain/constants.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var SquareType;
+exports.SQUARE_TERRAIN_DEFINITIONS = exports.SQUARE_FOODS = exports.SQUARE_SIZE = exports.TERRAIN_UPDATE_RATE = void 0;
 
-(function (SquareType) {
-  SquareType[SquareType["DEEP_WATER"] = 0] = "DEEP_WATER";
-  SquareType[SquareType["SHORE_WATER"] = 1] = "SHORE_WATER";
-  SquareType[SquareType["SAND"] = 2] = "SAND";
-  SquareType[SquareType["SWAMP"] = 3] = "SWAMP";
-  SquareType[SquareType["GRASSLAND"] = 4] = "GRASSLAND";
-  SquareType[SquareType["RAIN_FOREST"] = 5] = "RAIN_FOREST";
-  SquareType[SquareType["MOUNTAIN"] = 6] = "MOUNTAIN";
-  SquareType[SquareType["SNOW_PEAK"] = 7] = "SNOW_PEAK";
-})(SquareType = exports.SquareType || (exports.SquareType = {}));
+var types_1 = require("./types");
 
-;
-},{}],"Boids/colors.ts":[function(require,module,exports) {
-"use strict";
-
-var _exports$SquareColors;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var types_1 = require("./Terrain/types");
-
-exports.BirdColor = '#242124';
-exports.SquareColors = (_exports$SquareColors = {}, _defineProperty(_exports$SquareColors, types_1.SquareType.DEEP_WATER, '#006B99'), _defineProperty(_exports$SquareColors, types_1.SquareType.SHORE_WATER, '#008ECC'), _defineProperty(_exports$SquareColors, types_1.SquareType.SAND, '#e5d8c1'), _defineProperty(_exports$SquareColors, types_1.SquareType.SWAMP, '#555c45'), _defineProperty(_exports$SquareColors, types_1.SquareType.GRASSLAND, '#bbcba0'), _defineProperty(_exports$SquareColors, types_1.SquareType.RAIN_FOREST, '#92b29f'), _defineProperty(_exports$SquareColors, types_1.SquareType.MOUNTAIN, '#AAAAAA'), _defineProperty(_exports$SquareColors, types_1.SquareType.SNOW_PEAK, '#FFFFFF'), _exports$SquareColors);
-},{"./Terrain/types":"Boids/Terrain/types.ts"}],"Boids/Behavior/SelfBehavior/index.ts":[function(require,module,exports) {
-"use strict";
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var SelfBehavior = function SelfBehavior(bird) {
-  var _this = this;
-
-  _classCallCheck(this, SelfBehavior);
-
-  this.reset = function () {
-    _this.value = 0;
-  };
-
-  this.bird = bird;
-  this.value = 0;
-};
-
-exports.default = SelfBehavior;
-},{}],"Boids/Rules/SelfRules/Hunger/index.ts":[function(require,module,exports) {
+exports.TERRAIN_UPDATE_RATE = 5000;
+exports.SQUARE_SIZE = 6;
+exports.SQUARE_FOODS = new Map([[types_1.SquareType.DEEP_WATER, 0], [types_1.SquareType.SHORE_WATER, 0], [types_1.SquareType.SWAMP, 250], [types_1.SquareType.SAND, 50], [types_1.SquareType.GRASSLAND, 250], [types_1.SquareType.RAIN_FOREST, 1000], [types_1.SquareType.MOUNTAIN, 50], [types_1.SquareType.SNOW_PEAK, 0]]);
+exports.SQUARE_TERRAIN_DEFINITIONS = new Map([[types_1.SquareType.DEEP_WATER, {
+  height: {
+    min: 0,
+    max: 0.35
+  },
+  moisture: {
+    min: 0,
+    max: 1
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}], [types_1.SquareType.SHORE_WATER, {
+  height: {
+    min: 0.35,
+    max: 0.45
+  },
+  moisture: {
+    min: 0,
+    max: 0.7
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}], [types_1.SquareType.SWAMP, {
+  height: {
+    min: 0.35,
+    max: 0.45
+  },
+  moisture: {
+    min: 0.7,
+    max: 1
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}], [types_1.SquareType.SAND, {
+  height: {
+    min: 0.45,
+    max: 0.7
+  },
+  moisture: {
+    min: 0,
+    max: 0.4
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}], [types_1.SquareType.GRASSLAND, {
+  height: {
+    min: 0.45,
+    max: 0.7
+  },
+  moisture: {
+    min: 0.4,
+    max: 0.7
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}], [types_1.SquareType.RAIN_FOREST, {
+  height: {
+    min: 0.45,
+    max: 0.7
+  },
+  moisture: {
+    min: 0.7,
+    max: 1
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}], [types_1.SquareType.MOUNTAIN, {
+  height: {
+    min: 0.7,
+    max: 0.8
+  },
+  moisture: {
+    min: 0,
+    max: 1
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}], [types_1.SquareType.SNOW_PEAK, {
+  height: {
+    min: 0.8,
+    max: 1
+  },
+  moisture: {
+    min: 0,
+    max: 1
+  },
+  humidity: {
+    min: 0,
+    max: 1
+  }
+}]]);
+},{"./types":"Boids/Terrain/types.ts"}],"Boids/Behavior/BirdBehavior/Hunger/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -813,14 +971,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var SelfBehavior_1 = __importDefault(require("../../../Behavior/SelfBehavior"));
-
-var constants_1 = require("../../../constants");
+var Vector2D_1 = __importDefault(require("../../../Vector2D"));
 
 var __1 = __importDefault(require("../../.."));
 
-var Hunger = /*#__PURE__*/function (_SelfBehavior_1$defau) {
-  _inherits(Hunger, _SelfBehavior_1$defau);
+var __2 = __importDefault(require(".."));
+
+var constants_1 = require("../../../constants");
+
+var constants_2 = require("../../../Terrain/constants");
+
+var Hunger = /*#__PURE__*/function (_2$default) {
+  _inherits(Hunger, _2$default);
 
   var _super = _createSuper(Hunger);
 
@@ -831,23 +993,199 @@ var Hunger = /*#__PURE__*/function (_SelfBehavior_1$defau) {
   }
 
   _createClass(Hunger, [{
-    key: "perform",
-    value: function perform() {
-      if (this.bird.energy < constants_1.BIRD_START_HUNGER_ENERGY) {
-        var square = __1.default.instance.terrain.getSquareAtLocation(this.bird.position);
+    key: "goUp",
+    value: function goUp(pOffset) {
+      pOffset.x2 -= 1;
+    }
+  }, {
+    key: "goDown",
+    value: function goDown(pOffset) {
+      pOffset.x2 += 1;
+    }
+  }, {
+    key: "goRight",
+    value: function goRight(pOffset) {
+      pOffset.x1 += 1;
+    }
+  }, {
+    key: "goLeft",
+    value: function goLeft(pOffset) {
+      pOffset.x1 -= 1;
+    }
+  }, {
+    key: "walkAroundRange",
+    value: function walkAroundRange(pOffset) {
+      if (pOffset.x1 === 0 && pOffset.x2 === 0) {
+        pOffset.x1 = 1;
+      }
 
-        if (square && square.foodLevel > 0) {
-          this.bird.landed = true;
+      if (Math.abs(pOffset.x1) === Math.abs(pOffset.x2)) {
+        if (pOffset.x1 > 0 && pOffset.x2 > 0) {
+          this.goLeft(pOffset);
+        } else if (pOffset.x1 < 0 && pOffset.x2 > 0) {
+          this.goDown(pOffset);
+        } else if (pOffset.x1 < 0 && pOffset.x2 < 0) {
+          this.goRight(pOffset);
+        } else if (pOffset.x1 > 0 && pOffset.x2 < 0) {
+          this.goUp(pOffset);
+        }
+      } else {
+        if (pOffset.x1 > pOffset.x2 && Math.abs(pOffset.x1) > Math.abs(pOffset.x2)) {
+          this.goUp(pOffset);
+        } else if (pOffset.x1 < pOffset.x2 && Math.abs(pOffset.x1) < Math.abs(pOffset.x2)) {
+          this.goLeft(pOffset);
+        } else if (pOffset.x1 < pOffset.x2 && Math.abs(pOffset.x1) > Math.abs(pOffset.x2)) {
+          this.goDown(pOffset);
+        } else if (pOffset.x1 > pOffset.x2 && Math.abs(pOffset.x1) < Math.abs(pOffset.x2)) {
+          this.goRight(pOffset);
         }
       }
     }
   }, {
-    key: "decrement",
-    value: function decrement(deltaTime) {
-      if (this.bird.landed) {
-        var square = __1.default.instance.terrain.getSquareAtLocation(this.bird.position);
+    key: "performFoodSearch",
+    value: function performFoodSearch() {
+      var squareCenter;
+      var square;
+      var x;
 
-        if (square.foodLevel > 0) {
+      var startingLocation = __1.default.instance.terrain.getSquareAtLocation(this.bird.position);
+
+      if (!startingLocation) return null;
+      var squaresInVisualRange = constants_1.BIRD_VISUAL_RANGE / constants_2.SQUARE_SIZE * 2;
+      var pOffset = new Vector2D_1.default(0, 0);
+
+      for (x = 0; x < squaresInVisualRange; x++) {
+        square = __1.default.instance.terrain.getSquareAtCoord(pOffset.x1 + startingLocation.x, pOffset.x2 + startingLocation.y);
+
+        if (square && square.foodLevel > 0) {
+          squareCenter = square.getPixelCenter();
+
+          if (this.bird.position.distance(square.getPixelCenter()) < constants_1.BIRD_VISUAL_RANGE) {
+            return squareCenter.clone().sub(this.bird.position);
+          }
+        }
+
+        this.walkAroundRange(pOffset);
+      }
+
+      return null;
+    }
+  }, {
+    key: "perform",
+    value: function perform(birdCount) {
+      this.value.x1 /= birdCount;
+      this.value.x2 = this.bird.energy / constants_1.MAX_BIRD_ENERGY * constants_1.BIRD_HUNGER_LANDING_DESIRE;
+      var desireToLand = 1 - this.value.magnitude();
+
+      if (desireToLand > 0.5) {
+        var foodSquareVector = this.performFoodSearch();
+        if (!foodSquareVector) return null;
+
+        if (foodSquareVector.magnitude() < constants_2.SQUARE_SIZE) {
+          this.bird.landed = true;
+          return null;
+        } else {
+          return foodSquareVector.normalize().multiply(this.bird.velocity.magnitude()).sub(this.bird.velocity).multiply(desireToLand);
+        }
+      } else {
+        return null;
+      }
+    }
+  }, {
+    key: "accumulate",
+    value: function accumulate(bird) {
+      if (bird.landed) {
+        this.value.x1 += (1 - bird.position.distance(this.bird.position) / constants_1.BIRD_VISUAL_RANGE) * constants_1.BIRD_COMMUNAL_LANDING_DESIRE;
+      }
+    }
+  }]);
+
+  return Hunger;
+}(__2.default);
+
+exports.default = Hunger;
+},{"../../../Vector2D":"Boids/Vector2D/index.ts","../../..":"Boids/index.ts","..":"Boids/Behavior/BirdBehavior/index.ts","../../../constants":"Boids/constants.ts","../../../Terrain/constants":"Boids/Terrain/constants.ts"}],"Boids/Behavior/SelfBehavior/index.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var SelfBehavior = function SelfBehavior(bird) {
+  var _this = this;
+
+  _classCallCheck(this, SelfBehavior);
+
+  this.reset = function () {
+    _this.value = 0;
+  };
+
+  this.bird = bird;
+  this.value = 0;
+};
+
+exports.default = SelfBehavior;
+},{}],"Boids/Behavior/SelfBehavior/Eating/index.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var __1 = __importDefault(require(".."));
+
+var constants_1 = require("../../../constants");
+
+var __2 = __importDefault(require("../../.."));
+
+var Eating = /*#__PURE__*/function (_1$default) {
+  _inherits(Eating, _1$default);
+
+  var _super = _createSuper(Eating);
+
+  function Eating() {
+    _classCallCheck(this, Eating);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Eating, [{
+    key: "perform",
+    value: function perform(deltaTime) {
+      if (this.bird.landed) {
+        var square = __2.default.instance.terrain.getSquareAtLocation(this.bird.position);
+
+        if (square && square.foodLevel > 0) {
           var potentialConsumption = constants_1.BIRD_EATING_SPEED * deltaTime;
           var actualConsumption = potentialConsumption;
 
@@ -861,20 +1199,83 @@ var Hunger = /*#__PURE__*/function (_SelfBehavior_1$defau) {
 
           square.foodLevel -= actualConsumption;
           this.bird.energy += actualConsumption;
+
+          if (this.bird.energy >= constants_1.MAX_BIRD_ENERGY) {
+            this.bird.landed = false;
+          }
         } else {
           this.bird.landed = false;
         }
       }
+    }
+  }]);
 
+  return Eating;
+}(__1.default);
+
+exports.default = Eating;
+},{"..":"Boids/Behavior/SelfBehavior/index.ts","../../../constants":"Boids/constants.ts","../../..":"Boids/index.ts"}],"Boids/Behavior/SelfBehavior/Exhaustion/index.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var __1 = __importDefault(require(".."));
+
+var constants_1 = require("../../../constants");
+
+var Exhaustion = /*#__PURE__*/function (_1$default) {
+  _inherits(Exhaustion, _1$default);
+
+  var _super = _createSuper(Exhaustion);
+
+  function Exhaustion() {
+    _classCallCheck(this, Exhaustion);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(Exhaustion, [{
+    key: "perform",
+    value: function perform(deltaTime) {
       this.bird.energy -= constants_1.ACCELERATION_ENERGY_COST * this.bird.acceleration.magnitude() * deltaTime * deltaTime + constants_1.LIVING_ENERGY_COST * deltaTime;
     }
   }]);
 
-  return Hunger;
-}(SelfBehavior_1.default);
+  return Exhaustion;
+}(__1.default);
 
-exports.default = Hunger;
-},{"../../../Behavior/SelfBehavior":"Boids/Behavior/SelfBehavior/index.ts","../../../constants":"Boids/constants.ts","../../..":"Boids/index.ts"}],"Boids/Bird/index.ts":[function(require,module,exports) {
+exports.default = Exhaustion;
+},{"..":"Boids/Behavior/SelfBehavior/index.ts","../../../constants":"Boids/constants.ts"}],"Boids/Bird/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -895,42 +1296,44 @@ Object.defineProperty(exports, "__esModule", {
 
 var Vector2D_1 = __importDefault(require("../Vector2D"));
 
+var __1 = __importDefault(require("../"));
+
 var constants_1 = require("../constants");
-
-var helpers_1 = require("../helpers");
-
-var Cohesion_1 = __importDefault(require("../Rules/BirdRules/Cohesion"));
-
-var Alignment_1 = __importDefault(require("../Rules/BirdRules/Alignment"));
-
-var Separation_1 = __importDefault(require("../Rules/BirdRules/Separation"));
 
 var colors_1 = require("../colors");
 
-var Hunger_1 = __importDefault(require("../Rules/SelfRules/Hunger"));
+var helpers_1 = require("../helpers");
+
+var Cohesion_1 = __importDefault(require("../Behavior/BirdBehavior/Cohesion"));
+
+var Alignment_1 = __importDefault(require("../Behavior/BirdBehavior/Alignment"));
+
+var Separation_1 = __importDefault(require("../Behavior/BirdBehavior/Separation"));
+
+var Hunger_1 = __importDefault(require("../Behavior/BirdBehavior/Hunger"));
+
+var Eating_1 = __importDefault(require("../Behavior/SelfBehavior/Eating"));
+
+var Exhaustion_1 = __importDefault(require("../Behavior/SelfBehavior/Exhaustion"));
 
 var Bird = /*#__PURE__*/function () {
-  function Bird(boids, initialX, initialY, maxX, maxY) {
+  function Bird(boids, initialX, initialY) {
     _classCallCheck(this, Bird);
 
     this.boids = boids;
-    this.maxX = maxX;
-    this.maxY = maxY;
     this.position = new Vector2D_1.default(initialX, initialY);
     var randomAngle = helpers_1.fromDegree(Math.random() * 360);
-    this.velocity = new Vector2D_1.default(Math.cos(randomAngle), Math.sin(randomAngle)).normalize().multiply(constants_1.BIRD_SPEED);
+    this.velocity = new Vector2D_1.default(Math.cos(randomAngle), Math.sin(randomAngle)).normalize().multiply(constants_1.BIRD_SPEED * Math.random());
     this.acceleration = Vector2D_1.default.ZERO();
-    this.energy = constants_1.MAX_BIRD_ENERGY / 2 + constants_1.MAX_BIRD_ENERGY / 2 * Math.random();
-    this.birdRules = [new Cohesion_1.default(this), new Alignment_1.default(this), new Separation_1.default(this)];
-    this.selfRules = [new Hunger_1.default(this)];
+    this.energy = constants_1.MAX_BIRD_ENERGY * 0.5 + constants_1.MAX_BIRD_ENERGY * Math.random();
+    this.birdRules = [new Cohesion_1.default(this), new Alignment_1.default(this), new Separation_1.default(this), new Hunger_1.default(this)];
+    this.selfRules = [new Exhaustion_1.default(this), new Eating_1.default(this)];
     this.landed = false;
   }
 
   _createClass(Bird, [{
     key: "resetAccumulators",
     value: function resetAccumulators() {
-      this.acceleration.null();
-
       for (var i = 0; i < this.birdRules.length; i++) {
         this.birdRules[i].reset();
       }
@@ -954,8 +1357,14 @@ var Bird = /*#__PURE__*/function () {
         }
 
         if (perceivedBirdCount !== 0) {
+          var force;
+
           for (var _i = 0; _i < this.birdRules.length; _i++) {
-            this.acceleration.add(this.birdRules[_i].perform(perceivedBirdCount));
+            force = this.birdRules[_i].perform(perceivedBirdCount);
+
+            if (force) {
+              this.acceleration.add(force);
+            }
           }
         }
       }
@@ -964,23 +1373,23 @@ var Bird = /*#__PURE__*/function () {
     }
   }, {
     key: "performSenses",
-    value: function performSenses() {
+    value: function performSenses(deltaTime) {
       for (var i = 0; i < this.selfRules.length; i++) {
-        this.selfRules[i].perform();
+        this.selfRules[i].perform(deltaTime);
       }
     }
   }, {
     key: "checkBoundary",
     value: function checkBoundary() {
       if (this.position.x1 < 0) {
-        this.position.x1 = this.maxX;
-      } else if (this.position.x1 > this.maxX) {
+        this.position.x1 = __1.default.instance.maxX;
+      } else if (this.position.x1 > __1.default.instance.maxX) {
         this.position.x1 = 0;
       }
 
       if (this.position.x2 < 0) {
-        this.position.x2 = this.maxY;
-      } else if (this.position.x2 > this.maxY) {
+        this.position.x2 = __1.default.instance.maxY;
+      } else if (this.position.x2 > __1.default.instance.maxY) {
         this.position.x2 = 0;
       }
     }
@@ -1000,7 +1409,7 @@ var Bird = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update(deltaTime) {
-      this.performSenses();
+      this.performSenses(deltaTime);
       this.performManeuvers(this.boids.birds);
 
       if (!this.landed) {
@@ -1008,11 +1417,8 @@ var Bird = /*#__PURE__*/function () {
       }
 
       this.velocity.add(this.acceleration);
+      this.acceleration.null();
       this.checkBoundary();
-
-      for (var i = 0; i < this.selfRules.length; i++) {
-        this.selfRules[i].decrement(deltaTime);
-      }
 
       if (this.energy < 0) {
         this.die();
@@ -1028,7 +1434,7 @@ var Bird = /*#__PURE__*/function () {
       context.lineTo(this.position.x1 - constants_1.BIRD_WIDTH / 2, this.position.x2 + constants_1.BIRD_HEIGHT / 2);
       context.lineTo(this.position.x1 - constants_1.BIRD_WIDTH / 2, this.position.x2 - constants_1.BIRD_HEIGHT / 2);
       context.closePath();
-      context.stroke();
+      context.fill();
       this.unrotate(context);
     }
   }, {
@@ -1051,7 +1457,7 @@ var Bird = /*#__PURE__*/function () {
 }();
 
 exports.default = Bird;
-},{"../Vector2D":"Boids/Vector2D/index.ts","../constants":"Boids/constants.ts","../helpers":"Boids/helpers.ts","../Rules/BirdRules/Cohesion":"Boids/Rules/BirdRules/Cohesion/index.ts","../Rules/BirdRules/Alignment":"Boids/Rules/BirdRules/Alignment/index.ts","../Rules/BirdRules/Separation":"Boids/Rules/BirdRules/Separation/index.ts","../colors":"Boids/colors.ts","../Rules/SelfRules/Hunger":"Boids/Rules/SelfRules/Hunger/index.ts"}],"../node_modules/fast-simplex-noise/src/index.ts":[function(require,module,exports) {
+},{"../Vector2D":"Boids/Vector2D/index.ts","../":"Boids/index.ts","../constants":"Boids/constants.ts","../colors":"Boids/colors.ts","../helpers":"Boids/helpers.ts","../Behavior/BirdBehavior/Cohesion":"Boids/Behavior/BirdBehavior/Cohesion/index.ts","../Behavior/BirdBehavior/Alignment":"Boids/Behavior/BirdBehavior/Alignment/index.ts","../Behavior/BirdBehavior/Separation":"Boids/Behavior/BirdBehavior/Separation/index.ts","../Behavior/BirdBehavior/Hunger":"Boids/Behavior/BirdBehavior/Hunger/index.ts","../Behavior/SelfBehavior/Eating":"Boids/Behavior/SelfBehavior/Eating/index.ts","../Behavior/SelfBehavior/Exhaustion":"Boids/Behavior/SelfBehavior/Exhaustion/index.ts"}],"../node_modules/fast-simplex-noise/src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1472,123 +1878,7 @@ var FastSimplexNoise = function () {
 }();
 
 exports.default = FastSimplexNoise;
-},{}],"Boids/Terrain/constants.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var types_1 = require("./types");
-
-exports.SQUARE_SIZE = 6;
-exports.SQUARE_FOODS = new Map([[types_1.SquareType.DEEP_WATER, 0], [types_1.SquareType.SHORE_WATER, 0], [types_1.SquareType.SWAMP, 250], [types_1.SquareType.SAND, 50], [types_1.SquareType.GRASSLAND, 250], [types_1.SquareType.RAIN_FOREST, 1000], [types_1.SquareType.MOUNTAIN, 50], [types_1.SquareType.SNOW_PEAK, 0]]);
-exports.SQUARE_TERRAIN_DEFINITIONS = new Map([[types_1.SquareType.DEEP_WATER, {
-  height: {
-    min: 0,
-    max: 0.35
-  },
-  moisture: {
-    min: 0,
-    max: 1
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}], [types_1.SquareType.SHORE_WATER, {
-  height: {
-    min: 0.35,
-    max: 0.45
-  },
-  moisture: {
-    min: 0,
-    max: 0.7
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}], [types_1.SquareType.SWAMP, {
-  height: {
-    min: 0.35,
-    max: 0.45
-  },
-  moisture: {
-    min: 0.7,
-    max: 1
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}], [types_1.SquareType.SAND, {
-  height: {
-    min: 0.45,
-    max: 0.7
-  },
-  moisture: {
-    min: 0,
-    max: 0.4
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}], [types_1.SquareType.GRASSLAND, {
-  height: {
-    min: 0.45,
-    max: 0.7
-  },
-  moisture: {
-    min: 0.4,
-    max: 0.7
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}], [types_1.SquareType.RAIN_FOREST, {
-  height: {
-    min: 0.45,
-    max: 0.7
-  },
-  moisture: {
-    min: 0.7,
-    max: 1
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}], [types_1.SquareType.MOUNTAIN, {
-  height: {
-    min: 0.7,
-    max: 0.8
-  },
-  moisture: {
-    min: 0,
-    max: 1
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}], [types_1.SquareType.SNOW_PEAK, {
-  height: {
-    min: 0.8,
-    max: 1
-  },
-  moisture: {
-    min: 0,
-    max: 1
-  },
-  humidity: {
-    min: 0,
-    max: 1
-  }
-}]]);
-},{"./types":"Boids/Terrain/types.ts"}],"Boids/Terrain/Square/index.ts":[function(require,module,exports) {
+},{}],"Boids/Terrain/Square/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1596,6 +1886,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1605,6 +1901,10 @@ var constants_1 = require("../constants");
 
 var colors_1 = require("../../colors");
 
+var types_1 = require("../types");
+
+var Vector2D_1 = __importDefault(require("../../Vector2D"));
+
 var Square = /*#__PURE__*/function () {
   function Square(x, y, type) {
     _classCallCheck(this, Square);
@@ -1612,10 +1912,20 @@ var Square = /*#__PURE__*/function () {
     this.x = x;
     this.y = y;
     this.type = type;
+    this.isLandable = types_1.LANDABLE_SQUARE_TYPES.indexOf(this.type) !== -1;
+    this.center = new Vector2D_1.default(this.x * constants_1.SQUARE_SIZE + constants_1.SQUARE_SIZE / 2, this.y * constants_1.SQUARE_SIZE + constants_1.SQUARE_SIZE / 2);
     this.foodLevel = constants_1.SQUARE_FOODS.get(this.type) || 0;
   }
 
   _createClass(Square, [{
+    key: "getPixelCenter",
+    value: function getPixelCenter() {
+      return this.center;
+    }
+  }, {
+    key: "update",
+    value: function update(_) {}
+  }, {
     key: "render",
     value: function render(context) {
       context.fillStyle = colors_1.SquareColors[this.type];
@@ -1627,7 +1937,7 @@ var Square = /*#__PURE__*/function () {
 }();
 
 exports.default = Square;
-},{"../constants":"Boids/Terrain/constants.ts","../../colors":"Boids/colors.ts"}],"Boids/Terrain/index.ts":[function(require,module,exports) {
+},{"../constants":"Boids/Terrain/constants.ts","../../colors":"Boids/colors.ts","../types":"Boids/Terrain/types.ts","../../Vector2D":"Boids/Vector2D/index.ts"}],"Boids/Terrain/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1660,7 +1970,8 @@ var Terrain = /*#__PURE__*/function () {
   function Terrain() {
     _classCallCheck(this, Terrain);
 
-    this.layer = new typescript_render_engine_1.RenderingLayer(constants_1.LayerIndex.BACKGROUND, typescript_render_engine_1.LayerType.STATIC);
+    this.layer = new typescript_render_engine_1.DeferredLayer(constants_2.TERRAIN_UPDATE_RATE, constants_1.LayerIndex.BACKGROUND);
+    this.layer.update(constants_2.TERRAIN_UPDATE_RATE);
     this.heightMap = new src_1.default({
       frequency: 0.01,
       max: 1,
@@ -1706,30 +2017,38 @@ var Terrain = /*#__PURE__*/function () {
       }
     }
   }, {
+    key: "getSquareAtCoord",
+    value: function getSquareAtCoord(x, y) {
+      if (x > this.squares[0].length) {
+        return null;
+      }
+
+      if (y > this.squares.length) {
+        return null;
+      }
+
+      if (!this.squares || !this.squares[y] || !this.squares[y][x]) {
+        return null;
+      }
+
+      return this.squares[y][x];
+    }
+  }, {
     key: "getSquareAtLocation",
     value: function getSquareAtLocation(position) {
       var row = Math.floor(position.x2 / constants_2.SQUARE_SIZE);
       var col = Math.floor(position.x1 / constants_2.SQUARE_SIZE);
 
       if (col > this.squares[0].length) {
-        ;
-        ;
-        debugger;
-        ;
+        return null;
       }
 
       if (row > this.squares.length) {
-        ;
-        ;
-        debugger;
-        ;
+        return null;
       }
 
       if (!this.squares || !this.squares[row] || !this.squares[row][col]) {
-        ;
-        ;
-        debugger;
-        ;
+        return null;
       }
 
       return this.squares[row][col];
@@ -1738,8 +2057,9 @@ var Terrain = /*#__PURE__*/function () {
     key: "getTerrainType",
     value: function getTerrainType(x, y) {
       var height = this.heightMap.scaled2D(x, y);
+      var humidity = this.humidityMap.scaled2D(x, y);
       var moisture = this.moistureMap.scaled2D(x, y);
-      var squareType = this.squareTypeFromHeight(height, 0, moisture);
+      var squareType = this.squareTypeFromHeight(height, humidity, moisture);
       return squareType;
     }
   }, {
@@ -1748,8 +2068,10 @@ var Terrain = /*#__PURE__*/function () {
       var foundType = null;
       constants_2.SQUARE_TERRAIN_DEFINITIONS.forEach(function (values, type) {
         if (height >= values.height.min && height <= values.height.max) {
-          if (moisture >= values.moisture.min && moisture <= values.moisture.max) {
-            foundType = type;
+          if (humidity >= values.humidity.min && humidity <= values.humidity.max) {
+            if (moisture >= values.moisture.min && moisture <= values.moisture.max) {
+              foundType = type;
+            }
           }
         }
       });
@@ -1770,7 +2092,7 @@ var Terrain = /*#__PURE__*/function () {
 }();
 
 exports.default = Terrain;
-},{"@zacktherrien/typescript-render-engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js","../../../node_modules/fast-simplex-noise/src":"../node_modules/fast-simplex-noise/src/index.ts","./Square":"Boids/Terrain/Square/index.ts","../constants":"Boids/constants.ts","./constants":"Boids/Terrain/constants.ts"}],"Boids/index.ts":[function(require,module,exports) {
+},{"@zacktherrien/typescript-render-engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js","../../../node_modules/fast-simplex-noise/src":"../node_modules/fast-simplex-noise/src/index.ts","./Square":"Boids/Terrain/Square/index.ts","../constants":"Boids/constants.ts","./constants":"Boids/Terrain/constants.ts"}],"Boids/MouseTools/SelectionTool/index.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1779,13 +2101,202 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var SelectionTool = /*#__PURE__*/function () {
+  function SelectionTool(initialPosition) {
+    _classCallCheck(this, SelectionTool);
+
+    this.initialPosition = initialPosition;
+    this.position = initialPosition;
+    this.top = 0;
+    this.left = 0;
+    this.width = 0;
+    this.height = 0;
+  }
+
+  _createClass(SelectionTool, [{
+    key: "getGeometry",
+    value: function getGeometry() {
+      return {
+        top: this.top,
+        left: this.left,
+        width: this.width,
+        height: this.height
+      };
+    }
+  }, {
+    key: "updatePosition",
+    value: function updatePosition(newPosition) {
+      this.position = newPosition;
+      this.left = Math.min(this.initialPosition.x1, this.position.x1);
+      this.top = Math.min(this.initialPosition.x2, this.position.x2);
+      var right = Math.max(this.initialPosition.x1, this.position.x1);
+      var bottom = Math.max(this.initialPosition.x2, this.position.x2);
+      this.width = right - this.left;
+      this.height = bottom - this.top;
+    }
+  }, {
+    key: "render",
+    value: function render(context) {
+      context.strokeStyle = '#0F0';
+      context.strokeRect(this.left, this.top, this.width, this.height);
+    }
+  }]);
+
+  return SelectionTool;
+}();
+
+exports.default = SelectionTool;
+},{}],"Boids/MouseTools/index.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var typescript_render_engine_1 = require("@zacktherrien/typescript-render-engine");
+
+var constants_1 = require("../constants");
+
+var Vector2D_1 = __importDefault(require("../Vector2D"));
+
+var __1 = __importDefault(require(".."));
+
+var SelectionTool_1 = __importDefault(require("./SelectionTool"));
+
+var MouseToolsManager = /*#__PURE__*/function () {
+  function MouseToolsManager() {
+    _classCallCheck(this, MouseToolsManager);
+
+    this.layer = new typescript_render_engine_1.StaticLayer(constants_1.LayerIndex.TOOLS);
+    this.currentTool = null;
+    this.initialMouseLocation = Vector2D_1.default.ZERO();
+    this.mouseLocation = Vector2D_1.default.ZERO();
+    document.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+    document.addEventListener('contextmenu', function (event) {
+      return event.preventDefault();
+    });
+  }
+
+  _createClass(MouseToolsManager, [{
+    key: "chooseTool",
+    value: function chooseTool(tool) {
+      this.resetTool();
+      this.currentTool = tool;
+      this.layer.addEntity(this.currentTool);
+    }
+  }, {
+    key: "resetTool",
+    value: function resetTool() {
+      if (this.currentTool) {
+        this.layer.removeEntity(this.currentTool);
+        this.layer.allowRenderOnNextFrame();
+      }
+    }
+  }, {
+    key: "handleMouseDown",
+    value: function handleMouseDown(e) {
+      if (e.button !== 0) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+
+      this.mouseLocation = new Vector2D_1.default(e.offsetX, e.offsetY);
+      this.chooseTool(new SelectionTool_1.default(this.mouseLocation));
+    }
+  }, {
+    key: "handleMouseMove",
+    value: function handleMouseMove(e) {
+      this.mouseLocation = new Vector2D_1.default(e.offsetX, e.offsetY);
+
+      if (this.currentTool) {
+        this.layer.allowRenderOnNextFrame();
+        this.currentTool.updatePosition(this.mouseLocation);
+      }
+    }
+  }, {
+    key: "handleMouseUp",
+    value: function handleMouseUp() {
+      var _a;
+
+      if (!this.currentTool) return;
+
+      var _ref = (_a = this.currentTool) === null || _a === void 0 ? void 0 : _a.getGeometry(),
+          left = _ref.left,
+          top = _ref.top,
+          width = _ref.width,
+          height = _ref.height;
+
+      var right = left + width;
+      var bottom = top + height;
+
+      for (var i = 0; i < __1.default.instance.birds.length; i++) {
+        if (__1.default.instance.birds[i].position.x1 < right && __1.default.instance.birds[i].position.x1 > left && __1.default.instance.birds[i].position.x2 < bottom && __1.default.instance.birds[i].position.x2 > top) {
+          console.log(__1.default.instance.birds[i]);
+        }
+      }
+
+      this.resetTool();
+    }
+  }]);
+
+  return MouseToolsManager;
+}();
+
+exports.default = MouseToolsManager;
+},{"@zacktherrien/typescript-render-engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js","../constants":"Boids/constants.ts","../Vector2D":"Boids/Vector2D/index.ts","..":"Boids/index.ts","./SelectionTool":"Boids/MouseTools/SelectionTool/index.ts"}],"Boids/index.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function get() {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
   if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
   }
-  result["default"] = mod;
+
+  __setModuleDefault(result, mod);
+
   return result;
 };
 
@@ -1805,73 +2316,37 @@ var constants_1 = require("./constants");
 
 var Bird_1 = __importDefault(require("./Bird"));
 
-var Vector2D_1 = __importDefault(require("./Vector2D"));
-
 var Terrain_1 = __importDefault(require("./Terrain"));
 
-var Boids = /*#__PURE__*/function () {
-  function Boids() {
-    _classCallCheck(this, Boids);
+var MouseTools_1 = __importDefault(require("./MouseTools"));
 
-    Boids.instance = this;
-    this.terrain = new Terrain_1.default();
-    this.birdLayer = new typescript_render_engine_1.RenderingLayer(constants_1.LayerIndex.BIRDS, typescript_render_engine_1.LayerType.DYNAMIC);
-    this.birds = [];
+var Boids = function Boids() {
+  _classCallCheck(this, Boids);
 
-    for (var i = 0; i < constants_1.BIRD_COUNT; i++) {
-      var bird = new Bird_1.default(this, Math.random() * this.birdLayer.getWidth(), Math.random() * this.birdLayer.getHeight(), this.birdLayer.getWidth(), this.birdLayer.getHeight());
-      this.birds.push(bird);
-      this.birdLayer.addEntity(bird);
-    }
+  Boids.instance = this;
+  this.mouseTools = new MouseTools_1.default();
+  this.terrain = new Terrain_1.default();
+  this.birdLayer = new typescript_render_engine_1.DynamicLayer(constants_1.LayerIndex.BIRDS);
+  this.maxX = this.birdLayer.getWidth();
+  this.maxY = this.birdLayer.getHeight();
+  this.birds = [];
 
-    this.isLeftClicked = false;
-    this.isRightClicked = false;
-    this.mouseLocation = Vector2D_1.default.ZERO();
-    this.engine = new typescript_render_engine_1.default();
-    this.engine.registerLayer(this.terrain.layer);
-    this.engine.registerLayer(this.birdLayer);
-    this.engine.start();
-    this.terrain.layer.render();
-    document.addEventListener('mousedown', this.handleMouseDown.bind(this));
-    document.addEventListener('mouseup', this.handleMouseUp.bind(this));
-    document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-    document.addEventListener('contextmenu', function (event) {
-      return event.preventDefault();
-    });
+  for (var i = 0; i < constants_1.BIRD_COUNT; i++) {
+    var bird = new Bird_1.default(this, Math.random() * this.birdLayer.getWidth(), Math.random() * this.birdLayer.getHeight());
+    this.birds.push(bird);
+    this.birdLayer.addEntity(bird);
   }
 
-  _createClass(Boids, [{
-    key: "handleMouseDown",
-    value: function handleMouseDown(e) {
-      if (e.button === 0) {
-        this.isLeftClicked = true;
-      } else {
-        this.isRightClicked = true;
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
-
-      this.mouseLocation = new Vector2D_1.default(e.offsetX, e.offsetY);
-    }
-  }, {
-    key: "handleMouseMove",
-    value: function handleMouseMove(e) {
-      this.mouseLocation = new Vector2D_1.default(e.offsetX, e.offsetY);
-    }
-  }, {
-    key: "handleMouseUp",
-    value: function handleMouseUp() {
-      this.isLeftClicked = false;
-      this.isRightClicked = false;
-      this.mouseLocation = Vector2D_1.default.ZERO();
-    }
-  }]);
-
-  return Boids;
-}();
+  this.engine = new typescript_render_engine_1.default();
+  this.engine.registerLayer(this.terrain.layer);
+  this.engine.registerLayer(this.mouseTools.layer);
+  this.engine.registerLayer(this.birdLayer);
+  this.engine.start();
+  this.terrain.layer.render();
+};
 
 exports.default = Boids;
-},{"@zacktherrien/typescript-render-engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js","./constants":"Boids/constants.ts","./Bird":"Boids/Bird/index.ts","./Vector2D":"Boids/Vector2D/index.ts","./Terrain":"Boids/Terrain/index.ts"}],"index.ts":[function(require,module,exports) {
+},{"@zacktherrien/typescript-render-engine":"../node_modules/@zacktherrien/typescript-render-engine/dist/index.js","./constants":"Boids/constants.ts","./Bird":"Boids/Bird/index.ts","./Terrain":"Boids/Terrain/index.ts","./MouseTools":"Boids/MouseTools/index.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -1920,7 +2395,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49966" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51111" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

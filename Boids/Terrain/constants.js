@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SQUARE_TERRAIN_DEFINITIONS = exports.SQUARE_FOODS = exports.SQUARE_SIZE = exports.TERRAIN_UPDATE_RATE = void 0;
 const types_1 = require("./types");
+exports.TERRAIN_UPDATE_RATE = 5000;
 exports.SQUARE_SIZE = 6;
 exports.SQUARE_FOODS = new Map([
     [

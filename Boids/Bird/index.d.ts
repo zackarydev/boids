@@ -12,8 +12,6 @@ export interface IBird extends IEntity {
 }
 export default class Bird implements IBird {
     boids: Boids;
-    maxX: number;
-    maxY: number;
     position: Vector2D;
     velocity: Vector2D;
     acceleration: Vector2D;
@@ -21,10 +19,10 @@ export default class Bird implements IBird {
     landed: boolean;
     birdRules: Array<IBirdBehavior>;
     selfRules: Array<ISelfBehavior>;
-    constructor(boids: Boids, initialX: number, initialY: number, maxX: number, maxY: number);
+    constructor(boids: Boids, initialX: number, initialY: number);
     resetAccumulators(): void;
     performManeuvers(birds: Array<IBird>): void;
-    performSenses(): void;
+    performSenses(deltaTime: number): void;
     checkBoundary(): void;
     checkVelocity(): void;
     die(): void;

@@ -8,6 +8,7 @@ export declare enum SquareType {
     MOUNTAIN = 6,
     SNOW_PEAK = 7
 }
+export declare const LANDABLE_SQUARE_TYPES: SquareType[];
 export declare type TerrainDefinition = {
     min: number;
     max: number;
