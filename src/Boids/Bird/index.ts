@@ -1,28 +1,29 @@
-import { IEntity } from "@zacktherrien/typescript-render-engine";
-import Vector2D from "../Vector2D";
+import { IEntity } from '@zacktherrien/typescript-render-engine';
+import Vector2D from '../Vector2D';
 import Boids from '../';
 
 // Constants, helpers, colors
-import { 
-    BIRD_WIDTH, 
-    BIRD_HEIGHT, 
+import {
+    BIRD_WIDTH,
+    BIRD_HEIGHT,
     BIRD_SPEED,
     BIRD_VISUAL_RANGE,
     MAX_BIRD_ENERGY,
+    BIRD_ACCELERATION,
 } from '../constants';
-import { BirdColor } from "../colors";
+import { BirdColor } from '../colors';
 import { fromDegree, getAngle } from '../helpers';
 
 // Behaviors
-import { IBirdBehavior } from "../Behavior/BirdBehavior";
-import Cohesion from "../Behavior/BirdBehavior/Cohesion";
-import Alignment from "../Behavior/BirdBehavior/Alignment";
-import Separation from "../Behavior/BirdBehavior/Separation";
-import Hunger from "../Behavior/BirdBehavior/Hunger";
+import { IBirdBehavior } from '../Behavior/BirdBehavior';
+import Cohesion from '../Behavior/BirdBehavior/Cohesion';
+import Alignment from '../Behavior/BirdBehavior/Alignment';
+import Separation from '../Behavior/BirdBehavior/Separation';
+import Hunger from '../Behavior/BirdBehavior/Hunger';
 
-import { ISelfBehavior } from "../Behavior/SelfBehavior";
-import Eating from "../Behavior/SelfBehavior/Eating";
-import Exhaustion from "../Behavior/SelfBehavior/Exhaustion";
+import { ISelfBehavior } from '../Behavior/SelfBehavior';
+import Eating from '../Behavior/SelfBehavior/Eating';
+import Exhaustion from '../Behavior/SelfBehavior/Exhaustion';
 
 export interface IBird extends IEntity {
     position: Vector2D;
@@ -35,7 +36,6 @@ export interface IBird extends IEntity {
 }
 
 export default class Bird implements IBird {
-    
     boids: Boids;
 
     position: Vector2D;
@@ -54,33 +54,22 @@ export default class Bird implements IBird {
 
         this.position = new Vector2D(initialX, initialY);
         const randomAngle = fromDegree(Math.random() * 360);
-        this.velocity = new Vector2D(
-            Math.cos(randomAngle),
-            Math.sin(randomAngle)
-        )
+        this.velocity = new Vector2D(Math.cos(randomAngle), Math.sin(randomAngle))
             .normalize()
             .multiply(BIRD_SPEED * Math.random());
         this.acceleration = Vector2D.ZERO();
 
         this.energy = MAX_BIRD_ENERGY * 0.5 + MAX_BIRD_ENERGY * Math.random();
 
-        this.birdRules = [
-            new Cohesion(this),
-            new Alignment(this),
-            new Separation(this),
-            new Hunger(this),
-        ];
+        this.birdRules = [new Cohesion(this), new Alignment(this), new Separation(this), new Hunger(this)];
 
-        this.selfRules = [
-            new Exhaustion(this),
-            new Eating(this),
-        ];
+        this.selfRules = [new Exhaustion(this), new Eating(this)];
 
         this.landed = false;
     }
 
     resetAccumulators() {
-        for(let i = 0; i<this.birdRules.length; i++) {
+        for (let i = 0; i < this.birdRules.length; i++) {
             this.birdRules[i].reset();
         }
     }
@@ -92,27 +81,27 @@ export default class Bird implements IBird {
     performManeuvers(birds: Array<IBird>) {
         this.resetAccumulators();
 
-        if(!this.landed) {
+        if (!this.landed) {
             let perceivedBirdCount = 0;
-            for(let i = 0; i<birds.length; i++) {
-                if(
-                    !birds[i].landed &&     // only flying birds are taken into account
-                    birds[i] !== this &&    // that is not this bird
+            for (let i = 0; i < birds.length; i++) {
+                if (
+                    !birds[i].landed && // only flying birds are taken into account
+                    birds[i] !== this && // that is not this bird
                     birds[i].position.distance(this.position) < BIRD_VISUAL_RANGE // and is in range
                 ) {
                     perceivedBirdCount += 1;
-                    for(let r = 0; r<this.birdRules.length; r++) {
+                    for (let r = 0; r < this.birdRules.length; r++) {
                         this.birdRules[r].accumulate(birds[i]);
                     }
                 }
             }
-    
+
             // Flock mechanics
-            if(perceivedBirdCount !== 0) {
-                let force
-                for(let i = 0; i<this.birdRules.length; i++) {
+            if (perceivedBirdCount !== 0) {
+                let force;
+                for (let i = 0; i < this.birdRules.length; i++) {
                     force = this.birdRules[i].perform(perceivedBirdCount);
-                    if(force) {
+                    if (force) {
                         this.acceleration.add(force);
                     }
                 }
@@ -123,20 +112,20 @@ export default class Bird implements IBird {
     }
 
     performSenses(deltaTime: number) {
-        for(let i = 0; i<this.selfRules.length; i++) {
+        for (let i = 0; i < this.selfRules.length; i++) {
             this.selfRules[i].perform(deltaTime);
         }
     }
 
     checkBoundary() {
-        if(this.position.x1 < 0){
+        if (this.position.x1 < 0) {
             this.position.x1 = Boids.instance.maxX;
-        } else if(this.position.x1 > Boids.instance.maxX){
+        } else if (this.position.x1 > Boids.instance.maxX) {
             this.position.x1 = 0;
         }
-        if(this.position.x2 < 0){
+        if (this.position.x2 < 0) {
             this.position.x2 = Boids.instance.maxY;
-        } else if(this.position.x2 > Boids.instance.maxY){
+        } else if (this.position.x2 > Boids.instance.maxY) {
             this.position.x2 = 0;
         }
     }
@@ -144,9 +133,7 @@ export default class Bird implements IBird {
     checkVelocity() {
         // limit velocity:
         if (this.velocity.magnitude() > BIRD_SPEED) {
-            this.velocity
-                .normalize()
-                .multiply(BIRD_SPEED);
+            this.velocity.normalize().multiply(BIRD_SPEED);
         }
     }
 
@@ -159,18 +146,18 @@ export default class Bird implements IBird {
         this.performSenses(deltaTime);
         this.performManeuvers(this.boids.birds);
 
-        if(!this.landed) {
+        if (!this.landed) {
             this.position.add(
                 this.velocity
                     .clone() // we must clone because multiply mutates the object.
-                    .multiply(deltaTime)
+                    .multiply(deltaTime),
             );
         }
         this.velocity.add(this.acceleration);
         this.acceleration.null();
         this.checkBoundary();
 
-        if(this.energy < 0) {
+        if (this.energy < 0) {
             this.die();
         }
     }
@@ -179,9 +166,9 @@ export default class Bird implements IBird {
         this.rotate(context);
         context.strokeStyle = BirdColor;
         context.beginPath();
-        context.moveTo(this.position.x1 + BIRD_WIDTH/2, this.position.x2);
-        context.lineTo(this.position.x1 - BIRD_WIDTH/2, this.position.x2 + BIRD_HEIGHT/2);
-        context.lineTo(this.position.x1 - BIRD_WIDTH/2, this.position.x2 - BIRD_HEIGHT/2);
+        context.moveTo(this.position.x1 + BIRD_WIDTH / 2, this.position.x2);
+        context.lineTo(this.position.x1 - BIRD_WIDTH / 2, this.position.x2 + BIRD_HEIGHT / 2);
+        context.lineTo(this.position.x1 - BIRD_WIDTH / 2, this.position.x2 - BIRD_HEIGHT / 2);
         context.closePath();
         context.fill();
 
@@ -196,7 +183,6 @@ export default class Bird implements IBird {
         // context.closePath();
         // context.stroke();
 
-        
         this.unrotate(context);
     }
 

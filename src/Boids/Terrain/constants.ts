@@ -1,44 +1,25 @@
-import { SquareType, TerrainDefinitions } from "./types";
+import { SquareType, TerrainDefinitions } from './types';
 
 export const TERRAIN_UPDATE_RATE = 5000;
 
 export const SQUARE_SIZE = 6;
 
 export const SQUARE_FOODS: Map<SquareType, number> = new Map([
-    [
-        SquareType.DEEP_WATER, 0
-    ],
-    [
-        SquareType.SHORE_WATER, 0
-    ],
-    [
-        SquareType.SWAMP, 250
-    ],
-    [
-        SquareType.SAND, 50
-    ],
+    [SquareType.DEEP_WATER, 0],
+    [SquareType.SHORE_WATER, 0],
+    [SquareType.SWAMP, 250],
+    [SquareType.SAND, 50],
 
-    [
-        SquareType.GRASSLAND, 250
-    ],
-    [
-        SquareType.RAIN_FOREST, 1000
-    ],
-    [
-        SquareType.MOUNTAIN, 50
-    ],
+    [SquareType.GRASSLAND, 250],
+    [SquareType.RAIN_FOREST, 1000],
+    [SquareType.MOUNTAIN, 50],
 
-    [
-        SquareType.SNOW_PEAK, 0
-    ]
-])
+    [SquareType.SNOW_PEAK, 0],
+]);
 
-export const SQUARE_TERRAIN_DEFINITIONS: Map<
-    SquareType, 
-    TerrainDefinitions
-> = new Map([
+export const SQUARE_TERRAIN_DEFINITIONS: Map<SquareType, TerrainDefinitions> = new Map([
     [
-        SquareType.DEEP_WATER, 
+        SquareType.DEEP_WATER,
         {
             height: {
                 min: 0,
@@ -51,11 +32,11 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
     [
-        SquareType.SHORE_WATER, 
+        SquareType.SHORE_WATER,
         {
             height: {
                 min: 0.35,
@@ -68,11 +49,11 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
     [
-        SquareType.SWAMP, 
+        SquareType.SWAMP,
         {
             height: {
                 min: 0.35,
@@ -85,11 +66,11 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
     [
-        SquareType.SAND, 
+        SquareType.SAND,
         {
             height: {
                 min: 0.45,
@@ -102,11 +83,11 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
     [
-        SquareType.GRASSLAND, 
+        SquareType.GRASSLAND,
         {
             height: {
                 min: 0.45,
@@ -119,11 +100,11 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
     [
-        SquareType.RAIN_FOREST, 
+        SquareType.RAIN_FOREST,
         {
             height: {
                 min: 0.45,
@@ -136,11 +117,11 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
     [
-        SquareType.MOUNTAIN, 
+        SquareType.MOUNTAIN,
         {
             height: {
                 min: 0.7,
@@ -153,11 +134,11 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
     [
-        SquareType.SNOW_PEAK, 
+        SquareType.SNOW_PEAK,
         {
             height: {
                 min: 0.8,
@@ -170,12 +151,12 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
             humidity: {
                 min: 0,
                 max: 1,
-            }
-        }
+            },
+        },
     ],
 
     // [
-    //     SquareType.SNOW, 
+    //     SquareType.SNOW,
     //     {
     //         height: {
     //             min: 0.8,
@@ -192,7 +173,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.TUNDRA, 
+    //     SquareType.TUNDRA,
     //     {
     //         height: {
     //             min: 0.8,
@@ -209,7 +190,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.BARE, 
+    //     SquareType.BARE,
     //     {
     //         height: {
     //             min: 0.8,
@@ -226,7 +207,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.SCORCHED, 
+    //     SquareType.SCORCHED,
     //     {
     //         height: {
     //             min: 0.8,
@@ -242,9 +223,9 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //         }
     //     }
     // ],
-    
+
     // [
-    //     SquareType.TAIGA, 
+    //     SquareType.TAIGA,
     //     {
     //         height: {
     //             min: 0.6,
@@ -261,7 +242,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.SHRUBLAND, 
+    //     SquareType.SHRUBLAND,
     //     {
     //         height: {
     //             min: 0.6,
@@ -278,7 +259,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.TEMPERATE_DESERT, 
+    //     SquareType.TEMPERATE_DESERT,
     //     {
     //         height: {
     //             min: 0.6,
@@ -295,7 +276,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.TEMPERATE_RAIN_FOREST, 
+    //     SquareType.TEMPERATE_RAIN_FOREST,
     //     {
     //         height: {
     //             min: 0.4,
@@ -312,7 +293,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.TEMPERATE_DECIDUOUS_FOREST, 
+    //     SquareType.TEMPERATE_DECIDUOUS_FOREST,
     //     {
     //         height: {
     //             min: 0.4,
@@ -329,7 +310,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.GRASSLAND, 
+    //     SquareType.GRASSLAND,
     //     {
     //         height: {
     //             min: 0.4,
@@ -346,7 +327,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // // [
-    // //     SquareType.TEMPERATE_DESERT, 
+    // //     SquareType.TEMPERATE_DESERT,
     // //     {
     // //         height: {
     // //             min: 0.4,
@@ -364,7 +345,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     // // ],
 
     // [
-    //     SquareType.TROPICAL_RAIN_FOREST, 
+    //     SquareType.TROPICAL_RAIN_FOREST,
     //     {
     //         height: {
     //             min: 0.2,
@@ -381,7 +362,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.TROPICAL_SEASONAL_FOREST, 
+    //     SquareType.TROPICAL_SEASONAL_FOREST,
     //     {
     //         height: {
     //             min: 0.2,
@@ -398,7 +379,7 @@ export const SQUARE_TERRAIN_DEFINITIONS: Map<
     //     }
     // ],
     // [
-    //     SquareType.SUBTROPICAL_DESERT, 
+    //     SquareType.SUBTROPICAL_DESERT,
     //     {
     //         height: {
     //             min: 0.2,

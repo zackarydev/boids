@@ -1,4 +1,4 @@
-import { SquareType } from "./Terrain/types";
+import { SquareType } from './Terrain/types';
 
 export const BirdColor = '#242124';
 
@@ -11,7 +11,7 @@ export const SquareColors = {
 
     [SquareType.GRASSLAND]: '#bbcba0',
     [SquareType.RAIN_FOREST]: '#92b29f',
-    
+
     [SquareType.MOUNTAIN]: '#AAAAAA',
     [SquareType.SNOW_PEAK]: '#FFFFFF',
 };

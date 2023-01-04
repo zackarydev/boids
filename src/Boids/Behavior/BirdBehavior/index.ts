@@ -1,5 +1,5 @@
-import Vector2D from "../../Vector2D";
-import { IBird } from "../../Bird";
+import Vector2D from '../../Vector2D';
+import { IBird } from '../../Bird';
 
 export interface IBirdBehavior {
     reset(): void;
@@ -18,10 +18,9 @@ export default abstract class BirdBehavior implements IBirdBehavior {
 
     reset = () => {
         this.value.null();
-    }
+    };
 
     abstract perform(birdCount: number): Vector2D | null;
 
     abstract accumulate(boid: IBird): void;
-
 }

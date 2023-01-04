@@ -1,4 +1,4 @@
-import { IBird } from "../../Bird";
+import { IBird } from '../../Bird';
 
 export interface ISelfBehavior {
     reset(): void;
@@ -16,7 +16,7 @@ export default abstract class SelfBehavior implements ISelfBehavior {
 
     reset = () => {
         this.value = 0;
-    }
+    };
 
     abstract perform(deltaTime: number): void;
 }

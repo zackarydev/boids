@@ -1,18 +1,16 @@
-import SelfBehavior, { ISelfBehavior } from "..";
-import { 
+import SelfBehavior, { ISelfBehavior } from '..';
+import {
     ACCELERATION_ENERGY_COST,
     LIVING_ENERGY_COST,
     // BIRD_VISUAL_RANGE
-} from "../../../constants";
+} from '../../../constants';
 
-interface IExhaustion extends ISelfBehavior {
-}
+interface IExhaustion extends ISelfBehavior {}
 
 export default class Exhaustion extends SelfBehavior implements IExhaustion {
     perform(deltaTime: number) {
-        this.bird.energy -= (
+        this.bird.energy -=
             ACCELERATION_ENERGY_COST * this.bird.acceleration.magnitude() * deltaTime * deltaTime +
-            LIVING_ENERGY_COST * deltaTime
-        );
+            LIVING_ENERGY_COST * deltaTime;
     }
 }

@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/ZackTherrien/boids#readme",
   "dependencies": {
-    "@zacktherrien/typescript-render-engine": "^2.0.0",
+    "@zacktherrien/typescript-render-engine": "file:libs/typescript-render-engine-2.0.0-npm.tgz",
     "fast-simplex-noise": "^3.2.1",
     "gh-pages": "^2.2.0",
     "typescript": "^3.9.2"

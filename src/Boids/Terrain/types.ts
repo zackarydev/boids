@@ -10,7 +10,7 @@ export enum SquareType {
 
     MOUNTAIN,
     SNOW_PEAK,
-};
+}
 
 export const LANDABLE_SQUARE_TYPES = [
     SquareType.SAND,
@@ -24,12 +24,12 @@ export const LANDABLE_SQUARE_TYPES = [
 ];
 
 export type TerrainDefinition = {
-    min: number,
-    max: number,
+    min: number;
+    max: number;
 };
 
 export type TerrainDefinitions = {
-    height: TerrainDefinition,
-    humidity: TerrainDefinition,
-    moisture: TerrainDefinition,
+    height: TerrainDefinition;
+    humidity: TerrainDefinition;
+    moisture: TerrainDefinition;
 };

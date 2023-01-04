@@ -1,5 +1,4 @@
 export default class Vector2D {
-
     x1: number;
     x2: number;
 
@@ -29,7 +28,7 @@ export default class Vector2D {
         this.x2 += vector.x2;
         return this;
     }
-    
+
     sub(vector: Vector2D) {
         this.x1 -= vector.x1;
         this.x2 -= vector.x2;
@@ -50,7 +49,7 @@ export default class Vector2D {
 
     normalize() {
         const mag = this.magnitude();
-        if(mag === 0) {
+        if (mag === 0) {
             return Vector2D.ZERO();
         }
         return this.divide(mag);
@@ -61,7 +60,7 @@ export default class Vector2D {
     }
 
     distance(vector: Vector2D): number {
-        return Math.sqrt((this.x1 - vector.x1) ** 2 + (this.x2 - vector.x2) ** 2)
+        return Math.sqrt((this.x1 - vector.x1) ** 2 + (this.x2 - vector.x2) ** 2);
     }
 
     clone() {

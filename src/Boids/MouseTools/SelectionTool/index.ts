@@ -1,5 +1,5 @@
-import Vector2D from "../../Vector2D";
-import { IMouseTool } from "..";
+import Vector2D from '../../Vector2D';
+import { IMouseTool } from '..';
 
 export interface ISelectionTool extends IMouseTool {
     updatePosition(newPosition: Vector2D): void;
@@ -12,7 +12,6 @@ export interface ISelectionTool extends IMouseTool {
 }
 
 export default class SelectionTool implements ISelectionTool {
-
     initialPosition: Vector2D;
     position: Vector2D;
 
@@ -35,14 +34,14 @@ export default class SelectionTool implements ISelectionTool {
         return {
             top: this.top,
             left: this.left,
-            width: this.width, 
+            width: this.width,
             height: this.height,
         };
     }
 
     updatePosition(newPosition: Vector2D) {
         this.position = newPosition;
-        
+
         this.left = Math.min(this.initialPosition.x1, this.position.x1);
         this.top = Math.min(this.initialPosition.x2, this.position.x2);
 
@@ -54,9 +53,6 @@ export default class SelectionTool implements ISelectionTool {
 
     render(context: CanvasRenderingContext2D) {
         context.strokeStyle = '#0F0';
-        context.strokeRect(
-            this.left, this.top,
-            this.width, this.height
-        );
+        context.strokeRect(this.left, this.top, this.width, this.height);
     }
 }

@@ -1,8 +1,8 @@
-import { IEntity } from "@zacktherrien/typescript-render-engine";
-import { SQUARE_SIZE, SQUARE_FOODS } from "../constants";
-import { SquareColors } from "../../colors";
-import { SquareType, LANDABLE_SQUARE_TYPES } from "../types";
-import Vector2D from "../../Vector2D";
+import { IEntity } from '@zacktherrien/typescript-render-engine';
+import { SQUARE_SIZE, SQUARE_FOODS } from '../constants';
+import { SquareColors } from '../../colors';
+import { SquareType, LANDABLE_SQUARE_TYPES } from '../types';
+import Vector2D from '../../Vector2D';
 
 export interface ISquare extends IEntity {
     readonly isLandable: boolean;
@@ -15,7 +15,6 @@ export interface ISquare extends IEntity {
 }
 
 export default class Square implements ISquare {
-    
     readonly isLandable: boolean;
 
     x: number;
@@ -33,10 +32,7 @@ export default class Square implements ISquare {
 
         this.isLandable = LANDABLE_SQUARE_TYPES.indexOf(this.type) !== -1;
 
-        this.center = new Vector2D(
-            this.x * SQUARE_SIZE + SQUARE_SIZE/2,
-            this.y * SQUARE_SIZE + SQUARE_SIZE/2
-        );
+        this.center = new Vector2D(this.x * SQUARE_SIZE + SQUARE_SIZE / 2, this.y * SQUARE_SIZE + SQUARE_SIZE / 2);
 
         this.foodLevel = SQUARE_FOODS.get(this.type) || 0;
     }
@@ -45,12 +41,10 @@ export default class Square implements ISquare {
         return this.center;
     }
 
-    update(deltaTime: number) {
-    }
+    update(deltaTime: number) {}
 
     render(context: CanvasRenderingContext2D) {
         context.fillStyle = SquareColors[this.type];
         context.fillRect(this.x * SQUARE_SIZE, this.y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
     }
-
 }

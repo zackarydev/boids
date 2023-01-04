@@ -6,4 +6,4 @@ function load() {
     window.boids = boids;
 }
 
-window.addEventListener('load', load)
+window.addEventListener('load', load);

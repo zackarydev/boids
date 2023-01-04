@@ -2,12 +2,11 @@ import Engine, { IEngine, DynamicLayer, IRenderingLayer } from '@zacktherrien/ty
 
 import { LayerIndex, BIRD_COUNT } from './constants';
 
-import Bird, { IBird, } from './Bird';
+import Bird, { IBird } from './Bird';
 import Terrain, { ITerrain } from './Terrain';
 import MouseTools, { IMouseToolsManager } from './MouseTools';
 
 export default class Boids {
-
     static instance: Boids;
 
     maxX: number;
@@ -30,12 +29,12 @@ export default class Boids {
         this.maxY = this.birdLayer.getHeight();
 
         this.birds = [];
-        for(let i = 0; i<BIRD_COUNT; i++) {
+        for (let i = 0; i < BIRD_COUNT; i++) {
             // add a bird at a random location in our layer.
             const bird = new Bird(
                 this,
-                Math.random() * this.birdLayer.getWidth(), 
-                Math.random() * this.birdLayer.getHeight()
+                Math.random() * this.birdLayer.getWidth(),
+                Math.random() * this.birdLayer.getHeight(),
             );
 
             this.birds.push(bird);
